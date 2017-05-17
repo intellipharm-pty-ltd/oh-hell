@@ -1,0 +1,73 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    vertical-align: top;
+}
+
+.scores-wrapper .score .form-control {
+    display: inline-block;
+    width: 49%;
+}
+
+.round-wrapper label {
+    display: block;
+    width: 100%;
+}
+
+.round-wrapper .form-control {
+    display: inline-block;
+    width: 65%;
+}
+
+/* current-round */
+
+.current-round {
+    border-bottom: 1px solid #909090;
+    padding-bottom: 2em;
+    margin-bottom: 2em;
+}
+
+.current-round .current-round-suit,
+.current-round .current-round-dealer {
+    font-size: 10em;
+    width: 49%;
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.current-round .current-round-suit .current-round-suit-card {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    height: 400px;
+    width: 300px;
+    margin: 0 auto;
+}
+
+.current-round .current-round-suit .current-round-suit-card.S,
+.current-round .current-round-suit .current-round-suit-card.C,
+.current-round .current-round-suit .current-round-suit-card.N {
+    color: #000000;
+}
+
+.current-round .current-round-suit .current-round-suit-card.D,
+.current-round .current-round-suit .current-round-suit-card.H {
+    color: #FC0000;
+}
+
+.current-round .current-round-dealer .current-round-dealer-restriction {
+    font-size: 0.25em;
+}
+
+/* players-wrapper */
+
+.players-wrapper .player {
+    font-size: 2.5em;
+}

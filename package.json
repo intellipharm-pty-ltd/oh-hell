@@ -1,0 +1,28 @@
+{
+  "name": "oh-hell",
+  "version": "1.0.0",
+  "description": "Scoring website for the card game Oh Hell!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Intellipharm/oh-hell.git"
+  },
+  "keywords": [
+    "oh",
+    "hell",
+    "up",
+    "the",
+    "river",
+    "down",
+    "the",
+    "river",
+    "screw",
+    "your",
+    "neighbour"
+  ],
+  "author": "tim-intellipharm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Intellipharm/oh-hell/issues"
+  },
+  "homepage": "https://github.com/Intellipharm/oh-hell#readme",
+}
