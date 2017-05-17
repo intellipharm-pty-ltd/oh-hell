@@ -11,3 +11,5 @@ Otherwise follow these simple steps: Download files, open `index.html`, configur
  * Remembers the current game, and will load it back up on refresh
  * Charts for current game statistics
  
+### Browser Support
+Only tested in the latest version of Google Chrome on Desktop and briefly testing on Google Chrome on Android.
