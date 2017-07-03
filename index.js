@@ -1,4 +1,7 @@
-window.localStorage.clear();
+
+if (confirm("Clear Local Storage?") == true) {
+	window.localStorage.clear();
+}
 
 var module = angular.module('OhHell', []);
 
