@@ -1,3 +1,5 @@
+window.localStorage.clear();
+
 var module = angular.module('OhHell', []);
 
 // bootstrap angular into the page
