@@ -12,7 +12,7 @@ img {
 
 .scores-wrapper .score .form-control {
     display: inline-block;
-    width: 49%;
+    width: auto;
 }
 
 .round-wrapper label {
