@@ -87,8 +87,9 @@
                           <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in App.game.rounds" ng-show="App.showFullScore">
                               <div class="col-sm-1" ng-style="{'width': App.getColumnWidth()}">{{round.cards}}{{round.suit}} - {{App.game.settings.players[round.dealer]}}</div>
                               <div class="col-sm-1 score" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                                  <input type="number" min="0" max="10" class="form-control" title="Bid" ng-model="App.game.rounds[roundIndex].players[playerIndex].bid" />
-                                  <input type="number" min="0" max="10" class="form-control" title="Tricks Won" ng-model="App.game.rounds[roundIndex].players[playerIndex].tricks" />
+                                  <input type="checkbox" ng-model="App.game.rounds[roundIndex].players[playerIndex].blind" ng-show="App.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
+                                  <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="App.game.rounds[roundIndex].players[playerIndex].bid" />
+                                  <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="App.game.rounds[roundIndex].players[playerIndex].tricks" />
                                   {{App.game.rounds[roundIndex].players[playerIndex].points}}
                               </div>
                           </div>
