@@ -112,7 +112,7 @@
                                   </label>
                               </div>
                           </div>
-                          <div class="row">
+                          <div class="row" ng-show="!App.showFullScore">
                               <div class="col-sm-12">
                                   <button class="btn btn-primary" ng-click="App.startRound()" ng-show="!App.game.currentRound.started">Start Round</button>
                                   <button class="btn btn-primary" ng-click="App.nextRound()" ng-show="App.game.currentRound.started">Next Round</button>
