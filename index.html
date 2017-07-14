@@ -75,6 +75,10 @@
                                   <div class="current-round-dealer-restriction">
                                       {{App.calculateBidderRestriction(App.game.currentRound.index)}}
                                   </div>
+                                  <div class="current-round-current-bids">
+                                      There are {{App.calculateTotalBids(App.game.currentRound.index)}} bids from {{App.game.rounds[App.game.currentRound.index].cards}} possible wins
+                                  </div>
+                                
                               </div>
                           </div>
                           
