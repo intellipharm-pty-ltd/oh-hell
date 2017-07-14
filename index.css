@@ -62,6 +62,11 @@ img {
     color: #FC0000;
 }
 
+.current-round .current-round-current-bids {
+  font-size: 0.25em;
+  border-top: 1px solid #909090;
+}
+
 .current-round .current-round-dealer .current-round-dealer-restriction {
     font-size: 0.25em;
 }
