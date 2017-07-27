@@ -3,143 +3,146 @@
   <head>
     <meta charset="UTF-8">
     <title>Judas</title>
-    
+
     <!-- angular -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js" integrity="sha256-3SrLjPeRPa1ofM280r+OMcUjJZKLWJHr6SRtRu3dRb0=" crossorigin="anonymous"></script>
-    
+
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
-    
+
     <!-- chart.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js" integrity="sha256-+q+dGCSrVbejd3MDuzJHKsk2eXd4sF5XYEMfPZsOnYE=" crossorigin="anonymous"></script>
-    
+
     <!-- local -->
     <link rel="stylesheet" href="index.css" />
     <script src="index.js"></script>
   </head>
   <body ng-controller="AppController as App">
       <div class="container-fluid">
+          <h1>Judas!</h1>
           <div class="row">
-              <div class="col-sm-9">
-                  <h1>Judas!</h1>
-                  
-                  <div ng-if="App.game">
-                      <div ng-if="App.game.isFinished">
-                          <div class="col-sm-1" style="font-size:3em; overflow:hidden; text-overflow:ellipsis;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
-                              {{leader.player}}
+              <div class="col-sm-9" ng-if="App.game">
+                  <div ng-if="App.game.isFinished">
+                      <div class="col-sm-1" style="font-size:3em; overflow:hidden; text-overflow:ellipsis;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
+                          {{leader.player}}
+                      </div>
+                      <div class="col-sm-1" style="font-size:3em;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
+                          {{leader.points}}
+                      </div>
+                  </div>
+                  <div ng-if="!App.game.isFinished">
+                      <div class="col-sm-12 text-center tie-break" ng-show="App.game.isLeaderTied">
+                        Tie Break Round!
+                      </div>
+                      <div class="col-sm-12 text-center current-round" ng-show="!App.showFullScore">
+                          <div class="current-round-suit">
+                              <div class="current-round-suit-card {{App.game.rounds[App.game.currentRound.index].suit}}">
+                                  <div class="current-round-suit-count">
+                                      {{App.game.rounds[App.game.currentRound.index].cards}}
+                                  </div>
+                                  <span class="current-round-suit-suit" ng-switch="App.game.rounds[App.game.currentRound.index].suit">
+                                      <span ng-switch-when="S" style="color: #000000;">&spades;</span>
+                                      <span ng-switch-when="C" style="color: #000000;">&clubs;</span>
+                                      <span ng-switch-when="D" style="color: #FC0000;">&diams;</span>
+                                      <span ng-switch-when="H" style="color: #FC0000;">&hearts;</span>
+                                      <span ng-switch-when="N">
+                                          <!-- &#127183; -->
+                                          <img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" />
+                                      </span>
+                                  </span>
+                              </div>
                           </div>
-                          <div class="col-sm-1" style="font-size:3em;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
-                              {{leader.points}}
+                          <div class="current-round-dealer">
+                              {{App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer]}}
+
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'bruce'">
+                                  <img src="https://pbs.twimg.com/profile_images/548209152770576385/7SZlFSUy.jpeg"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'bjt'">
+                                  <img src="https://media.giphy.com/media/cC9w4WlsyS4jC/giphy-downsized.gif"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'damien'">
+                                  <img src="https://media.giphy.com/media/2FazeUr0xlznK4fvy/giphy-downsized.gif"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'gbish'">
+                                  <img src="https://media.giphy.com/media/75owxrJIDVnEc/giphy-downsized.gif"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'gbh'">
+                                  <img src="https://media.giphy.com/media/75owxrJIDVnEc/giphy-downsized.gif"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'rich'">
+                                  <img src="https://media.giphy.com/media/YflaHYTrjmkEw/giphy-downsized.gif"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'paul'">
+                                  <img src="https://media.giphy.com/media/eJ8Uh7CFt2T28/giphy-downsized.gif"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'geoff'">
+                                  <img src="http://www.bankruptcylawnetwork.com/wp-content/uploads/2013/05/flatline.jpg"/>
+                              </span>
+                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'damian'">
+                                  <img src="https://media.giphy.com/media/2FazeUr0xlznK4fvy/giphy-downsized.gif"/>
+                              </span>
+                              <div class="current-round-dealer-restriction">
+                                  {{App.calculateBidderRestriction(App.game.currentRound.index)}}
+                              </div>
+                              <div class="current-round-current-bids">
+                                  There are {{App.calculateTotalBids(App.game.currentRound.index)}} bids from {{App.game.rounds[App.game.currentRound.index].cards}} possible wins
+                              </div>
+
                           </div>
                       </div>
-                      <div ng-if="!App.game.isFinished">
-                          <div class="col-sm-12 text-center current-round" ng-show="!App.showFullScore">
-                              <div class="current-round-suit">
-                                  <div class="current-round-suit-card {{App.game.rounds[App.game.currentRound.index].suit}}">
-                                      <div class="current-round-suit-count">
-                                          {{App.game.rounds[App.game.currentRound.index].cards}}
-                                      </div>
-                                      <span class="current-round-suit-suit" ng-switch="App.game.rounds[App.game.currentRound.index].suit">
-                                          <span ng-switch-when="S" style="color: #000000;">&spades;</span>
-                                          <span ng-switch-when="C" style="color: #000000;">&clubs;</span>
-                                          <span ng-switch-when="D" style="color: #FC0000;">&diams;</span>
-                                          <span ng-switch-when="H" style="color: #FC0000;">&hearts;</span>
-                                          <span ng-switch-when="N">
-                                              <!-- &#127183; -->
-                                              <img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" />
-                                          </span>
-                                      </span>
-                                  </div>
-                              </div>
-                              <div class="current-round-dealer">
-                                  {{App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer]}}
 
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'bruce'">
-                                      <img src="https://pbs.twimg.com/profile_images/548209152770576385/7SZlFSUy.jpeg"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'bjt'">
-                                      <img src="https://media.giphy.com/media/cC9w4WlsyS4jC/giphy-downsized.gif"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'damien'">
-                                      <img src="https://media.giphy.com/media/2FazeUr0xlznK4fvy/giphy-downsized.gif"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'gbish'">
-                                      <img src="https://media.giphy.com/media/75owxrJIDVnEc/giphy-downsized.gif"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'gbh'">
-                                      <img src="https://media.giphy.com/media/75owxrJIDVnEc/giphy-downsized.gif"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'rich'">
-                                      <img src="https://media.giphy.com/media/YflaHYTrjmkEw/giphy-downsized.gif"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'paul'">
-                                      <img src="https://media.giphy.com/media/eJ8Uh7CFt2T28/giphy-downsized.gif"/>
-                                  </span>
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'geoff'">
-                                      <img src="http://www.bankruptcylawnetwork.com/wp-content/uploads/2013/05/flatline.jpg"/>
-                                  </span>                                  
-                                  <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'damian'">
-                                      <img src="https://media.giphy.com/media/2FazeUr0xlznK4fvy/giphy-downsized.gif"/>
-                                  </span> 
-                                  <div class="current-round-dealer-restriction">
-                                      {{App.calculateBidderRestriction(App.game.currentRound.index)}}
-                                  </div>
-                                  <div class="current-round-current-bids">
-                                      There are {{App.calculateTotalBids(App.game.currentRound.index)}} bids from {{App.game.rounds[App.game.currentRound.index].cards}} possible wins
-                                  </div>
-                                
-                              </div>
+                      <div class="row players-wrapper text-center">
+                          <div class="col-sm-1" ng-show="App.showFullScore" ng-style="{'width': App.getColumnWidth()}">Round</div>
+                          <div class="col-sm-1 player" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
+                              {{player}}: {{App.calculateTotalPoints(playerIndex)}}
                           </div>
-                          
-                          <div class="row players-wrapper text-center">
-                              <div class="col-sm-1" ng-show="App.showFullScore" ng-style="{'width': App.getColumnWidth()}">Round</div>
-                              <div class="col-sm-1 player" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                                  {{player}}: {{App.calculateTotalPoints(playerIndex)}}
-                              </div>
+                      </div>
+                      <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in App.game.rounds" ng-show="App.showFullScore">
+                          <div class="col-sm-1" ng-style="{'width': App.getColumnWidth()}">{{round.cards}}{{round.suit}} - {{App.game.settings.players[round.dealer]}}</div>
+                          <div class="col-sm-1 score" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
+                              <input type="checkbox" ng-model="App.game.rounds[roundIndex].players[playerIndex].blind" ng-show="App.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
+                              <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="App.game.rounds[roundIndex].players[playerIndex].bid" />
+                              <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="App.game.rounds[roundIndex].players[playerIndex].tricks" />
+                              {{App.game.rounds[roundIndex].players[playerIndex].points}}
                           </div>
-                          <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in App.game.rounds" ng-show="App.showFullScore">
-                              <div class="col-sm-1" ng-style="{'width': App.getColumnWidth()}">{{round.cards}}{{round.suit}} - {{App.game.settings.players[round.dealer]}}</div>
-                              <div class="col-sm-1 score" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                                  <input type="checkbox" ng-model="App.game.rounds[roundIndex].players[playerIndex].blind" ng-show="App.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
-                                  <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="App.game.rounds[roundIndex].players[playerIndex].bid" />
-                                  <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="App.game.rounds[roundIndex].players[playerIndex].tricks" />
-                                  {{App.game.rounds[roundIndex].players[playerIndex].points}}
-                              </div>
+                      </div>
+
+                      <div class="row round-wrapper text-center" ng-show="!App.showFullScore">
+                          <div class="col-sm-1" ng-show="!App.game.currentRound.started" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
+                              <label ng-show="App.eligibleForBlindBid(playerIndex, App.game.currentRound.index)">
+                                  Blind Bid
+                                  <input type="checkbox" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].blind" />
+                              </label>
+                              <label>
+                                  Bid
+                                  <input type="number" min="0" max="10" class="form-control" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].bid" />
+                              </label>
                           </div>
-                          
-                          <div class="row round-wrapper text-center" ng-show="!App.showFullScore">
-                              <div class="col-sm-1" ng-show="!App.game.currentRound.started" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                                  <label ng-show="App.eligibleForBlindBid(playerIndex, App.game.currentRound.index)">
-                                      Blind Bid
-                                      <input type="checkbox" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].blind" />
-                                  </label>
-                                  <label>
-                                      Bid
-                                      <input type="number" min="0" max="10" class="form-control" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].bid" />
-                                  </label>
-                              </div>
-                              
-                              <div class="col-sm-1" ng-show="App.game.currentRound.started" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                                  <label>
-                                      Tricks
-                                      {{App.game.rounds[App.game.currentRound.index].players[playerIndex].bid}} / <input type="number" min="0" max="10" class="form-control" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].tricks" />
-                                  </label>
-                              </div>
+
+                          <div class="col-sm-1" ng-show="App.game.currentRound.started" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
+                              <label>
+                                  Tricks
+                                  {{App.game.rounds[App.game.currentRound.index].players[playerIndex].bid}} / <input type="number" min="0" max="10" class="form-control" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].tricks" />
+                              </label>
                           </div>
-                          <div class="row" ng-show="!App.showFullScore">
-                              <div class="col-sm-12">
-                                  <button class="btn btn-primary" ng-click="App.startRound()" ng-show="!App.game.currentRound.started">Start Round</button>
-                                  <button class="btn btn-primary" ng-click="App.nextRound()" ng-show="App.game.currentRound.started">Next Round</button>
-                              </div>
+                      </div>
+                      <div class="row" ng-show="!App.showFullScore">
+                          <div class="col-sm-12">
+                              <button class="btn btn-primary" ng-click="App.startRound()" ng-show="!App.game.currentRound.started">Start Round</button>
+                              <button class="btn btn-primary" ng-click="App.nextRound()" ng-show="App.game.currentRound.started">Next Round</button>
                           </div>
                       </div>
                   </div>
               </div>
-              <div class="col-sm-3">
-                  <div class="actions-wrapper">
+              <div ng-class="{
+                'col-sm-3': App.game,
+                'col-sm-12': !App.game,
+              }">
+                  <div class="actions-wrapper" ng-if="App.game">
                       <button class="btn btn-primary" ng-click="App.toggleStoreView()" ng-if="!App.game.isFinished">Toggle Score View</button>
                   </div>
-                  <div class="stats-wrapper">
+                  <div class="stats-wrapper" ng-if="App.game">
                       <canvas id="chart-bid-scores" height="200" width="175"></canvas>
                       <canvas id="chart-bid-accuracy" height="200" width="250"></canvas>
                       <canvas id="chart-bid-counts" height="200" width="250"></canvas>
@@ -147,19 +150,19 @@
                   <div class="setting-wrapper">
                       <h2 ng-if="App.game">Settings</h2>
                       <h2 ng-if="!App.game">Start new game</h2>
-                      
+
                       <h3>Players</h3>
-                      
+
                       <div ng-repeat="(playerIndex, player) in App.settings.players">
                           {{player}} <button class="btn btn-danger" title="Remove player" ng-click="App.removePlayer(playerIndex)"><i class="glyphicon glyphicon-remove"></i></button>
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="new-player-name">New player name</label>
                           <input type="text" class="form-control" id="new-player-name" placeholder="New player name" ng-model="App.newPlayerName" />
                           <button class="btn btn-primary" title="Add player" ng-click="App.addNewPlayer()"><i class="glyphicon glyphicon-plus"></i> Add player</button>
                       </div>
-                      
+
                       <h3>Rounds</h3>
                       <div class="form-group">
                           <label for="first-round">Number of cards in first round</label>
@@ -173,9 +176,9 @@
                           <label for="mirror-round">Should the rounds be mirrored?</label>
                           <input type="checkbox" id="mirror-round" ng-model="App.settings.mirrorRounds" />
                       </div>
-                      
+
                       <h3>Points Per Trick</h3>
-                      
+
                       <div class="form-group">
                           <label for="points-win-per-trick">Win points per trick won?</label>
                           <input type="checkbox" id="points-win-per-trick" ng-model="App.settings.winPointsPerTrick" />
@@ -192,58 +195,58 @@
                           <label for="points-lose-per-difference">Lose points per trick/bid difference?</label>
                           <input type="checkbox" id="points-lose-per-difference" ng-model="App.settings.losePointsPerDifference" />
                       </div>
-                      
+
                       <h3>Points On Success</h3>
-                      
+
                       <div class="form-group">
                           <label for="points-successful-bid">Fixed bonus points for successful bid</label>
                           <input type="number" min="0" max="30" class="form-control" id="points-successful-bid" placeholder="Fixed bonus points for successful bid" ng-model="App.settings.pointsSuccessfulBid" />
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="points-successful-bid-variable">Award bonus points equal to the number of cards dealt?</label>
                           <input type="checkbox" id="points-successful-bid-variable" ng-model="App.settings.pointsSuccessfulVariable" />
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="points-successful-bid-inverse">Award bonus points inverse to the number of cards dealt?</label>
                           <input type="checkbox" id="points-successful-bid-inverse" ng-model="App.settings.pointsSuccessfulInverse" />
                       </div>
-                      
+
                       <h3>Points On Failure</h3>
-                      
+
                       <div class="form-group">
                           <label for="points-unsuccessful-bid">Bonus points for unsuccessful bid</label>
                           <input type="number" min="-30" max="0" class="form-control" id="points-unsuccessful-bid" placeholder="Bonus points for unsuccessful bid" ng-model="App.settings.pointsUnsuccessfulBid" />
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="points-unsuccessful-bid-variable">Reduce bonus points equal to the number of cards dealt?</label>
                           <input type="checkbox" id="points-unsuccessful-bid-variable" ng-model="App.settings.pointsUnsuccessfulVariable" />
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="points-unsuccessful-bid-inverse">Reduce bonus points inverse to the number of cards dealt?</label>
                           <input type="checkbox" id="points-unsuccessful-bid-inverse" ng-model="App.settings.pointsUnsuccessfulInverse" />
                       </div>
-                      
+
                       <h3>Blind Bidding</h3>
-                      
+
                       <div class="form-group">
                           <label for="blind-bid-points-threshold">Blind bidding points behind leader threshold</label>
                           <input type="number" min="0" max="30" class="form-control" id="blind-bid-points-threshold" placeholder="Blind bidding points behind leader threshold" ng-model="App.settings.blindBidThreshold" />
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="blind-bid-bonus">Blind bidding fixed bonus points</label>
                           <input type="number" min="0" max="30" class="form-control" id="blind-bid-bonus" placeholder="Blind bidding bonus points" ng-model="App.settings.blindBidBonus" />
                       </div>
-                      
+
                       <div class="form-group">
                           <label for="blind-bid-double">Blind bidding should double the points in the round?</label>
                           <input type="checkbox" id="blind-bid-double" ng-model="App.settings.blindBidDouble" />
                       </div>
-                      
+
                       <button class="btn btn-success" ng-click="App.startGame()">Start game</button>
                   </div>
               </div>

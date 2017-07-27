@@ -25,6 +25,12 @@ img {
     width: 65%;
 }
 
+/* tie break */
+.tie-break {
+  font-size: 3em;
+  font-weight: bold;
+}
+
 /* current-round */
 
 .current-round {
