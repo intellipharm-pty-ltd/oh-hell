@@ -49,25 +49,7 @@ img {
     text-overflow: ellipsis;
 }
 
-.current-round .current-round-suit .current-round-suit-card {
-    border: 1px solid #000000;
-    border-radius: 5px;
-    height: 400px;
-    width: 300px;
-    margin: 0 auto;
-}
-
-.current-round .current-round-suit .current-round-suit-card.S,
-.current-round .current-round-suit .current-round-suit-card.C,
-.current-round .current-round-suit .current-round-suit-card.N {
-    color: #000000;
-}
-
-.current-round .current-round-suit .current-round-suit-card.D,
-.current-round .current-round-suit .current-round-suit-card.H {
-    color: #FC0000;
-}
-
+.current-round .current-round-super-trump,
 .current-round .current-round-current-bids {
   font-size: 0.25em;
   border-top: 1px solid #909090;
@@ -81,4 +63,37 @@ img {
 
 .players-wrapper .player {
     font-size: 2.5em;
+}
+
+/* Card */
+
+.card {
+    border: 1px solid #000000;
+    border-radius: 5px;
+    margin: 0 auto;
+}
+
+.card.card-size-large {
+    height: 400px;
+    width: 300px;
+    font-size: 200px;
+    line-height: 200px;
+}
+
+.card.card-size-small {
+    height: 80px;
+    width: 60px;
+    font-size: 40px;
+    line-height: 40px;
+}
+
+.card.card-suit-S,
+.card.card-suit-C,
+.card.card-suit-N {
+    color: #000000;
+}
+
+.card.card-suit-D,
+.card.card-suit-H {
+    color: #FC0000;
 }

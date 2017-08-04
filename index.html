@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Judas</title>
+    <title>Oh Hell!</title>
 
     <!-- angular -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js" integrity="sha256-3SrLjPeRPa1ofM280r+OMcUjJZKLWJHr6SRtRu3dRb0=" crossorigin="anonymous"></script>
@@ -19,7 +19,7 @@
   </head>
   <body ng-controller="AppController as App">
       <div class="container-fluid">
-          <h1>Judas!</h1>
+          <h1>Oh Hell!</h1>
           <div class="row">
               <div class="col-sm-9" ng-if="App.game">
                   <div ng-if="App.game.isFinished">
@@ -36,57 +36,28 @@
                       </div>
                       <div class="col-sm-12 text-center current-round" ng-show="!App.showFullScore">
                           <div class="current-round-suit">
-                              <div class="current-round-suit-card {{App.game.rounds[App.game.currentRound.index].suit}}">
-                                  <div class="current-round-suit-count">
-                                      {{App.game.rounds[App.game.currentRound.index].cards}}
-                                  </div>
-                                  <span class="current-round-suit-suit" ng-switch="App.game.rounds[App.game.currentRound.index].suit">
-                                      <span ng-switch-when="S" style="color: #000000;">&spades;</span>
-                                      <span ng-switch-when="C" style="color: #000000;">&clubs;</span>
-                                      <span ng-switch-when="D" style="color: #FC0000;">&diams;</span>
-                                      <span ng-switch-when="H" style="color: #FC0000;">&hearts;</span>
-                                      <span ng-switch-when="N">
-                                          <!-- &#127183; -->
-                                          <img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" />
-                                      </span>
-                                  </span>
-                              </div>
+                              <card suit="App.game.rounds[App.game.currentRound.index].card.suit" name="App.game.rounds[App.game.currentRound.index].cardCount" size="large"></card>
                           </div>
                           <div class="current-round-dealer">
                               {{App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer]}}
 
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'bruce'">
-                                  <img src="https://media.giphy.com/media/mKPTMhAlmhlRu/giphy.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'bjt'">
-                                  <img src="https://media.giphy.com/media/mKPTMhAlmhlRu/giphy.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'damien'">
-                                  <img src="https://media.giphy.com/media/2FazeUr0xlznK4fvy/giphy-downsized.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'gbish'">
-                                  <img src="https://media.giphy.com/media/3SVExCrwqkRa/giphy.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'gbh'">
-                                  <img src="https://media.giphy.com/media/3SVExCrwqkRa/giphy.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'rich'">
-                                  <img src="https://media.giphy.com/media/YflaHYTrjmkEw/giphy-downsized.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'paul'">
-                                  <img src="https://media.giphy.com/media/3o6ZtjgaKQvSy8N8ha/giphy.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'geoff'">
-                                  <img src="https://media.giphy.com/media/uH333LKBhT7Ww/giphy.gif"/>
-                              </span>
-                              <span ng-if="App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer].toLowerCase() === 'damian'">
-                                  <img src="https://media.giphy.com/media/YzgCHgHKbiCdy/giphy.gif"/>
-                              </span>
                               <div class="current-round-dealer-restriction">
                                   {{App.calculateBidderRestriction(App.game.currentRound.index)}}
                               </div>
                               <div class="current-round-current-bids">
-                                  There are {{App.calculateTotalBids(App.game.currentRound.index)}} bids from {{App.game.rounds[App.game.currentRound.index].cards}} possible wins
+                                  There are {{App.calculateTotalBids(App.game.currentRound.index)}} bids from {{App.game.rounds[App.game.currentRound.index].cardCount}} possible wins
+                              </div>
+                              <div class="current-round-super-trump" ng-if="App.game.settings.allowSuperTrump">
+                                  Super Trump
+                                  <div ng-if="App.game.rounds[App.game.currentRound.index].card.suit === 'N'">
+                                    N/A for No Trumps
+                                  </div>
+                                  <card
+                                    ng-if="App.game.rounds[App.game.currentRound.index].card.suit !== 'N'"
+                                    suit="App.game.rounds[App.game.currentRound.index].card.suit"
+                                    name="App.game.rounds[App.game.currentRound.index].card.name"
+                                    size="small"
+                                  ></card>
                               </div>
 
                           </div>
@@ -99,7 +70,7 @@
                           </div>
                       </div>
                       <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in App.game.rounds" ng-show="App.showFullScore">
-                          <div class="col-sm-1" ng-style="{'width': App.getColumnWidth()}">{{round.cards}}{{round.suit}} - {{App.game.settings.players[round.dealer]}}</div>
+                          <div class="col-sm-1" ng-style="{'width': App.getColumnWidth()}">{{round.cardCount}}{{round.card.suit}} - {{App.game.settings.players[round.dealer]}}</div>
                           <div class="col-sm-1 score" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
                               <input type="checkbox" ng-model="App.game.rounds[roundIndex].players[playerIndex].blind" ng-show="App.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
                               <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="App.game.rounds[roundIndex].players[playerIndex].bid" />
@@ -164,6 +135,7 @@
                       </div>
 
                       <h3>Rounds</h3>
+
                       <div class="form-group">
                           <label for="first-round">Number of cards in first round</label>
                           <input type="number" min="1" max="10" class="form-control" id="first-round" placeholder="Number of cards in first round" ng-model="App.settings.cardsInFirstRound" />
@@ -175,6 +147,18 @@
                       <div class="form-group">
                           <label for="mirror-round">Should the rounds be mirrored?</label>
                           <input type="checkbox" id="mirror-round" ng-model="App.settings.mirrorRounds" />
+                      </div>
+
+                      <h3>Trumps</h3>
+
+                      <div class="form-group">
+                          <label for="allow-no-trumps">Allow no trumps?</label>
+                          <input type="checkbox" id="allow-no-trumps" ng-model="App.settings.allowNoTrumps" />
+                      </div>
+
+                      <div class="form-group">
+                          <label for="allow-super-trump">Show super trump? (The card drawn to determine the suit of the round becomes the highest trump card for that round)</label>
+                          <input type="checkbox" id="allow-super-trump" ng-model="App.settings.allowSuperTrump" />
                       </div>
 
                       <h3>Points Per Trick</h3>

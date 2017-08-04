@@ -44,22 +44,26 @@ class AppController {
 
 		var roundRange = this.roundRange(this.settings.cardsInFirstRound, this.settings.cardsInLastRound, this.settings.mirrorRounds);
 
+		var deck = this.generateDeck();
+
 		for (var i = 0; i < roundRange.length; i++) {
-			rounds.push(this.generateRound(rounds));
+			rounds.push(this.generateRound(rounds, deck));
 		}
 
 		this.game = {
 			settings: this.settings,
 			rounds: rounds,
+			deck: deck,
 			isFinished: false,
 			currentRound: {
 				index: 0,
 				started: false,
 			},
 		};
+		console.log(this.game);
 	}
 
-	generateRound(rounds) {
+	generateRound(rounds, deck) {
 		var roundRange = this.roundRange(this.settings.cardsInFirstRound, this.settings.cardsInLastRound, this.settings.mirrorRounds);
 		var roundIndex = rounds.length;
 		var dealer;
@@ -74,11 +78,11 @@ class AppController {
 			}
 		}
 
-		var cards = this.game && this.game.isLeaderTied ? this.getHighestCardCount() : roundRange[roundIndex];
+		var cardCount = this.game && this.game.isLeaderTied ? this.getHighestCardCount() : roundRange[roundIndex];
 
 		var round = {
-			suit: this.generateRandomSuit(roundIndex === 0 ? null : rounds[roundIndex - 1].suit),
-			cards: cards,
+			card: this.drawFromDeck(deck, roundIndex === 0 ? null : rounds[roundIndex - 1].card.suit, this.settings.allowNoTrumps),
+			cardCount: cardCount,
 			dealer: dealer,
 			players: [],
 		};
@@ -157,7 +161,7 @@ class AppController {
 	}
 
 	calculateRoundPoints (playerIndex, roundIndex) {
-		var cards = this.game.rounds[roundIndex].cards;
+		var cards = this.game.rounds[roundIndex].cardCount;
 		var bid = parseInt(this.game.rounds[roundIndex].players[playerIndex].bid);
 		var tricks = parseInt(this.game.rounds[roundIndex].players[playerIndex].tricks);
 		var successful = tricks === bid;
@@ -252,15 +256,20 @@ class AppController {
 		return totalPoints;
 	}
 
-	generateRandomSuit (previousSuit) {
-		var suits = ['S', 'C', 'D', 'H'];
-		var index = this.generateRandomNumber(0, 3);
+	drawFromDeck(deck, previousSuit, allowNoTrumps) {
+		var index = this.generateRandomNumber(0, deck.length - 1);
+		var card = deck[index];
 
-		if (suits[index] === previousSuit) {
-			return 'N';
+		// if this card is already drawn then drawn a different card
+		if (card.drawn) {
+			return this.drawFromDeck(deck, previousSuit, allowNoTrumps);
 		}
 
-		return suits[index];
+		if (allowNoTrumps && card.suit === previousSuit) {
+			card.suit = 'N';
+		}
+
+		return card;
 	}
 
 	generateRandomNumber (first, last) {
@@ -496,7 +505,7 @@ class AppController {
 			this.game.isFinished = !this.game.isLeaderTied;
 
 			if (this.game.isLeaderTied) {
-				this.game.rounds.push(this.generateRound(this.game.rounds));
+				this.game.rounds.push(this.generateRound(this.game.rounds, this.game.deck));
 				this.proceedToNextRound();
 			}
 		} else {
@@ -551,7 +560,7 @@ class AppController {
 	}
 
 	calculateBidderRestriction(roundIndex) {
-		let bid = this.game.rounds[roundIndex].cards - this.calculateTotalBids(roundIndex, this.game.rounds[roundIndex].dealer);
+		var bid = this.game.rounds[roundIndex].cardCount - this.calculateTotalBids(roundIndex, this.game.rounds[roundIndex].dealer);
 
 		if (bid < 0) {
 			return 'Can bid anything';
@@ -583,8 +592,52 @@ class AppController {
 			window.localStorage.clear();
 		}
 	}
+
+	generateDeck() {
+		var names = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+		var suits = ['H', 'D', 'S', 'C'];
+		var deck = [];
+
+	    for (var s = 0; s < suits.length; s++) {
+        for (var n = 0; n < names.length; n++) {
+          deck.push({
+						name: names[n],
+						suit: suits[s]
+					});
+        }
+	    }
+
+	    return deck;
+	}
 }
 
 AppController.$inject = ['$scope', '$timeout'];
 
 module.controller('AppController', AppController);
+
+var cardComponent = {
+	bindings: {
+		suit: '<',
+		name: '<',
+		size: '@',
+	},
+	template: `<div class="card card-suit-{{card.suit}} card-size-{{card.size}}">
+			<div class="card-name">
+				{{card.name}}
+			</div>
+			<span class="card-suit" ng-switch="card.suit">
+				<span ng-switch-when="S" style="color: #000000;">&spades;</span>
+				<span ng-switch-when="C" style="color: #000000;">&clubs;</span>
+				<span ng-switch-when="D" style="color: #FC0000;">&diams;</span>
+				<span ng-switch-when="H" style="color: #FC0000;">&hearts;</span>
+				<span ng-switch-when="N">
+					<!-- &#127183; -->
+					<img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" alt="No Trumps" />
+				</span>
+			</span>
+	</div>`,
+	controller: function() {},
+	controllerAs: 'card'
+};
+
+module.component('card', cardComponent);
