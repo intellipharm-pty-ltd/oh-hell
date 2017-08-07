@@ -50,7 +50,8 @@ img {
 }
 
 .current-round .current-round-super-trump,
-.current-round .current-round-current-bids {
+.current-round .current-round-current-bids,
+.current-round .current-round-blind-bids {
   font-size: 0.25em;
   border-top: 1px solid #909090;
 }
@@ -96,4 +97,18 @@ img {
 .card.card-suit-D,
 .card.card-suit-H {
     color: #FC0000;
+}
+
+/* Bidding */
+
+.underbid {
+  color: #f0ad4e;
+}
+
+.accurate-bid {
+  color: #5cb85c;
+}
+
+.overbid {
+  color: #c9302c;
 }

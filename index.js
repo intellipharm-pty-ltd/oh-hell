@@ -294,21 +294,21 @@ class AppController {
 
 		var datasets = [{
 			label: 'Accurate Bid',
-			backgroundColor: '#5cb85c',
+			backgroundColor: this.getAccurateBidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
 			}),
 		}, {
 			label: 'Underbid',
-			backgroundColor: '#f0ad4e',
+			backgroundColor: this.getUnderbidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
 			}),
 		}, {
 			label: 'Overbid',
-			backgroundColor: '#c9302c',
+			backgroundColor: this.getOverbidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
@@ -509,6 +509,18 @@ class AppController {
 		][playerIndex];
 	}
 
+	getUnderbidColour () {
+		return '#f0ad4e';
+	}
+
+	getAccurateBidColour () {
+		return '#5cb85c';
+	}
+
+	getOverbidColour () {
+		return '#c9302c';
+	}
+
 	getBlindBidColour () {
 		return '#e31a1c';
 	}
@@ -611,6 +623,34 @@ class AppController {
 			}
 
 			bids += this.game.rounds[roundIndex].players[i].bid;
+		}
+
+		return bids;
+	}
+
+	calculateBlindBidsDescription (roundIndex, excludeDealer) {
+		var bids = this.calculateBlindBids(roundIndex, excludeDealer);
+
+		if (bids === 0) {
+			return 'There are no blind bids';
+		} else if (bids === 1) {
+			return 'There is 1 blind bid';
+		} else {
+			return 'There are ' + bids + ' blind bids';
+		}
+	}
+
+	calculateBlindBids (roundIndex, excludeDealer) {
+		var bids = 0;
+
+		for (var i = 0; i < this.game.rounds[roundIndex].players.length; i++) {
+			if (i === excludeDealer) {
+				continue;
+			}
+
+			if (this.game.rounds[roundIndex].players[i].blind) {
+				bids++;
+			}
 		}
 
 		return bids;
