@@ -1,3 +1,9 @@
+var BID_ACCURACY = {
+	UNDERBID: 'Underbid',
+	ACCURATE: 'Accurate Bid',
+	OVERBID: 'Overbid'
+};
+
 var module = angular.module('OhHell', []);
 
 // bootstrap angular into the page
@@ -293,21 +299,21 @@ class AppController {
 		});
 
 		var datasets = [{
-			label: 'Accurate Bid',
+			label: BID_ACCURACY.ACCURATE,
 			backgroundColor: this.getAccurateBidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
 			}),
 		}, {
-			label: 'Underbid',
+			label: BID_ACCURACY.UNDERBID,
 			backgroundColor: this.getUnderbidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
 			}),
 		}, {
-			label: 'Overbid',
+			label: BID_ACCURACY.OVERBID,
 			backgroundColor: this.getOverbidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
@@ -317,17 +323,14 @@ class AppController {
 
 		this.game.rounds.forEach((round, roundIndex) => {
 			round.players.forEach((player, playerIndex) => {
-				var tricks = parseInt(player.tricks);
-				var bid = parseInt(player.bid);
+				var bidAccuracy = this.calculatePlayerRoundBidAccuracy(playerIndex, roundIndex);
 
-				if (!isNaN(tricks) && !isNaN(bid)) {
-					if (tricks > bid) {
-						datasets[1].data[playerIndex]++;
-					} else if (tricks === bid) {
-						datasets[0].data[playerIndex]++;
-					} else if (tricks < bid) {
-						datasets[2].data[playerIndex]++;
-					}
+				if (bidAccuracy === BID_ACCURACY.UNDERBID) {
+					datasets[1].data[playerIndex]++;
+				} else if (bidAccuracy === BID_ACCURACY.ACCURATE) {
+					datasets[0].data[playerIndex]++;
+				} else if (bidAccuracy === BID_ACCURACY.OVERBID) {
+					datasets[2].data[playerIndex]++;
 				}
 			});
 		});
@@ -654,6 +657,47 @@ class AppController {
 		}
 
 		return bids;
+	}
+
+	calculateAccurateBidCount (playerIndex, roundIndex) {
+		var accurateBids = 0;
+
+		for (var i = 0; i < roundIndex; i++) {
+			let bidAccuracy = this.calculatePlayerRoundBidAccuracy(playerIndex, i);
+
+			if (bidAccuracy === BID_ACCURACY.ACCURATE) {
+				accurateBids++;
+			}
+		}
+
+		return accurateBids;
+	}
+
+	calculateBidAccuracy (playerIndex, roundIndex) {
+		return Math.round(this.calculateAccurateBidCount(playerIndex, roundIndex) / roundIndex * 100);
+	}
+
+	calculatePlayerRoundBidAccuracy (playerIndex, roundIndex) {
+		var tricks = parseInt(this.game.rounds[roundIndex].players[playerIndex].tricks);
+		var bid = parseInt(this.game.rounds[roundIndex].players[playerIndex].bid);
+
+		if (isNaN(tricks) || isNaN(bid)) {
+			return null;
+		}
+
+		if (tricks > bid) {
+			return BID_ACCURACY.UNDERBID;
+		}
+
+		if (tricks === bid) {
+			return BID_ACCURACY.ACCURATE;
+		}
+
+		if (tricks < bid) {
+			return BID_ACCURACY.OVERBID;
+		}
+
+		return null;
 	}
 
 	getHighestCardCount() {

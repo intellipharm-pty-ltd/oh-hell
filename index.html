@@ -23,7 +23,7 @@
           <div class="row">
               <div class="col-sm-9" ng-if="App.game">
                   <div ng-if="App.game.isFinished">
-                      <div class="col-sm-1" style="font-size:3em; overflow:hidden; text-overflow:ellipsis;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
+                      <div class="col-sm-1 text-ellipsis" style="font-size:3em;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
                           {{leader.player}}
                       </div>
                       <div class="col-sm-1" style="font-size:3em;" ng-style="{'width': App.getColumnWidth()}" ng-repeat="leader in App.game.leaderboard">
@@ -75,7 +75,9 @@
                       <div class="row players-wrapper text-center">
                           <div class="col-sm-1" ng-show="App.showFullScore" ng-style="{'width': App.getColumnWidth()}">Round</div>
                           <div class="col-sm-1 player" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                              {{player}}: {{App.calculateTotalPoints(playerIndex)}}
+                              <div class="text-ellipsis">{{player}}</div>
+                              <div class="text-small">Points: {{App.calculateTotalPoints(playerIndex)}}</div>
+                              <div class="text-small">Bids: {{App.calculateAccurateBidCount(playerIndex, App.game.currentRound.index)}} / {{App.game.currentRound.index}} ({{App.calculateBidAccuracy(playerIndex, App.game.currentRound.index)}}%)</div>
                           </div>
                       </div>
                       <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in App.game.rounds" ng-show="App.showFullScore">
@@ -90,13 +92,13 @@
 
                       <div class="row round-wrapper text-center" ng-show="!App.showFullScore">
                           <div class="col-sm-1" ng-show="!App.game.currentRound.started" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
-                              <label ng-show="App.eligibleForBlindBid(playerIndex, App.game.currentRound.index)">
-                                  Blind Bid
-                                  <input type="checkbox" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].blind" />
-                              </label>
                               <label>
                                   Bid
                                   <input type="number" min="0" max="10" class="form-control" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].bid" />
+                              </label>
+                              <label ng-show="App.eligibleForBlindBid(playerIndex, App.game.currentRound.index)">
+                                Blind Bid
+                                <input type="checkbox" ng-model="App.game.rounds[App.game.currentRound.index].players[playerIndex].blind" />
                               </label>
                           </div>
 

@@ -112,3 +112,14 @@ img {
 .overbid {
   color: #c9302c;
 }
+
+/* Font */
+
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-small {
+  font-size: 0.75em;
+}
