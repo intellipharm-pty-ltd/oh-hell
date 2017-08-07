@@ -60,7 +60,6 @@ class AppController {
 				started: false,
 			},
 		};
-		console.log(this.game);
 	}
 
 	generateRound(rounds, deck) {
@@ -423,8 +422,11 @@ class AppController {
 		}
 
 		var datasets = [];
+		var threshold = parseInt(this.game.settings.blindBidThreshold);
 
 		this.game.rounds.forEach((round, roundIndex) => {
+			let roundHighestPoints = null;
+
 			round.players.forEach((player, playerIndex) => {
 				if (!datasets[playerIndex]) {
 					datasets[playerIndex] = {
@@ -438,13 +440,35 @@ class AppController {
 
 				var points = parseInt(player.points);
 				if (!isNaN(points)) {
-					if (roundIndex === 0) {
-						datasets[playerIndex].data.push(points);
-					} else {
-						datasets[playerIndex].data.push(datasets[playerIndex].data[roundIndex - 1] + points);
+					if (roundIndex > 0) {
+						points = datasets[playerIndex].data[roundIndex - 1] + points;
+					}
+					datasets[playerIndex].data.push(points);
+
+					if (points > roundHighestPoints || roundHighestPoints === null) {
+						roundHighestPoints = points;
 					}
 				}
 			});
+
+			if (!isNaN(threshold)) {
+				if (!datasets[round.players.length]) {
+					datasets[round.players.length] = {
+						label: 'Blind Bid Threshold',
+						backgroundColor: this.getBlindBidColour(),
+						borderColor: this.getBlindBidColour(),
+						fill: false,
+						data: [],
+					}
+				}
+
+				var blindBidThreshold = roundHighestPoints - threshold;
+				if (blindBidThreshold < 0) {
+					blindBidThreshold = roundHighestPoints === null ? null : 0;
+				}
+
+				datasets[round.players.length].data.push(blindBidThreshold)
+			}
 		});
 
 		if (this.chartBidScores) {
@@ -471,13 +495,22 @@ class AppController {
 
 	getPlayerColour (playerIndex) {
 		return [
-            '#EE2E2F',
-            '#F47D23',
-            '#008C48',
-            '#185AA9',
-            '#662C91',
-            '#E76BC7',
-        ][playerIndex];
+			'#a6cee3',
+			'#1f78b4',
+			'#b2df8a',
+			'#33a02c',
+			'#fb9a99',
+			'#fdbf6f',
+			'#ff7f00',
+			'#cab2d6',
+			'#6a3d9a',
+			'#ffff99',
+			'#b15928'
+		][playerIndex];
+	}
+
+	getBlindBidColour () {
+		return '#e31a1c';
 	}
 
 	getColumnWidth () {
