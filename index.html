@@ -35,40 +35,41 @@
                         Tie Break Round!
                       </div>
                       <div class="col-sm-12 text-center current-round" ng-show="!App.showFullScore">
-                          <div class="current-round-suit">
-                              <card suit="App.game.rounds[App.game.currentRound.index].card.suit" name="App.game.rounds[App.game.currentRound.index].cardCount" size="large"></card>
-                          </div>
-                          <div class="current-round-dealer">
-                              {{App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer]}}
-
-                              <div class="current-round-dealer-restriction">
-                                  {{App.calculateBidderRestriction(App.game.currentRound.index)}}
+                          <div class="row">
+                              <div class="col-sm-3">
+                                  <h3>Dealer</h3>
+                                  <p>{{App.game.settings.players[App.game.rounds[App.game.currentRound.index].dealer]}}</p>
+                                  <p>{{App.calculateBidderRestriction(App.game.currentRound.index)}}</p>
                               </div>
-                              <div class="current-round-current-bids">
-                                  There are
-                                  <span ng-class="{
-                                    'underbid': App.calculateTotalBids(App.game.currentRound.index) < App.game.rounds[App.game.currentRound.index].cardCount,
-                                    'accurate-bid': App.calculateTotalBids(App.game.currentRound.index) === App.game.rounds[App.game.currentRound.index].cardCount,
-                                    'overbid': App.calculateTotalBids(App.game.currentRound.index) > App.game.rounds[App.game.currentRound.index].cardCount,
-                                  }">{{App.calculateTotalBids(App.game.currentRound.index)}} </span>
-                                  bids from <b>{{App.game.rounds[App.game.currentRound.index].cardCount}}</b> possible wins
+                              <div class="col-sm-3">
+                                  <h3>Cards</h3>
+                                  <p>{{App.game.rounds[App.game.currentRound.index].cardCount}} {{App.game.rounds[App.game.currentRound.index].card.suit}}</p>
                               </div>
-                              <div class="current-round-blind-bids" ng-if="App.game.settings.blindBidThreshold">
-                                {{App.calculateBlindBidsDescription(App.game.currentRound.index)}}
+                              <div class="col-sm-3">
+                                  <h3>Bids</h3>
+                                  <p>
+                                    There are
+                                    <span ng-class="{
+                                      'underbid': App.calculateTotalBids(App.game.currentRound.index) < App.game.rounds[App.game.currentRound.index].cardCount,
+                                      'accurate-bid': App.calculateTotalBids(App.game.currentRound.index) === App.game.rounds[App.game.currentRound.index].cardCount,
+                                      'overbid': App.calculateTotalBids(App.game.currentRound.index) > App.game.rounds[App.game.currentRound.index].cardCount,
+                                    }">{{App.calculateTotalBids(App.game.currentRound.index)}} </span>
+                                    bids from <b>{{App.game.rounds[App.game.currentRound.index].cardCount}}</b> possible wins
+                                  </p>
+                                  <p>{{App.calculateBlindBidsDescription(App.game.currentRound.index)}}</p>
                               </div>
-                              <div class="current-round-super-trump" ng-if="App.game.settings.allowSuperTrump">
-                                  Super Trump
-                                  <div ng-if="App.game.rounds[App.game.currentRound.index].card.suit === 'N'">
+                              <div class="col-sm-3" ng-if="App.game.settings.allowSuperTrump">
+                                  <h3>Super Trump</h3>
+                                  <p ng-if="App.game.rounds[App.game.currentRound.index].card.suit === 'N'">
                                     N/A for No Trumps
-                                  </div>
+                                  </p>
                                   <card
-                                    ng-if="App.game.rounds[App.game.currentRound.index].card.suit !== 'N'"
-                                    suit="App.game.rounds[App.game.currentRound.index].card.suit"
-                                    name="App.game.rounds[App.game.currentRound.index].card.name"
-                                    size="small"
+                                      ng-if="App.game.rounds[App.game.currentRound.index].card.suit !== 'N'"
+                                      suit="App.game.rounds[App.game.currentRound.index].card.suit"
+                                      name="App.game.rounds[App.game.currentRound.index].card.name"
+                                      size="small"
                                   ></card>
                               </div>
-
                           </div>
                       </div>
 
