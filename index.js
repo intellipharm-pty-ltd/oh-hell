@@ -542,6 +542,10 @@ class AppController {
 		this.showFullScore = !this.showFullScore;
 	}
 
+	toggleTheme () {
+		this.darkTheme = !this.darkTheme;
+	}
+
 	startRound () {
 		this.game.currentRound.started = true;
 	}
@@ -742,19 +746,30 @@ var cardComponent = {
 			<div class="card-name">
 				{{card.name}}
 			</div>
-			<span class="card-suit" ng-switch="card.suit">
-				<span ng-switch-when="S" style="color: #000000;">&spades;</span>
-				<span ng-switch-when="C" style="color: #000000;">&clubs;</span>
-				<span ng-switch-when="D" style="color: #FC0000;">&diams;</span>
-				<span ng-switch-when="H" style="color: #FC0000;">&hearts;</span>
-				<span ng-switch-when="N">
-					<!-- &#127183; -->
-					<img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" alt="No Trumps" />
-				</span>
-			</span>
+			<suit suit="card.suit"></suit>
 	</div>`,
 	controller: function() {},
 	controllerAs: 'card'
 };
 
 module.component('card', cardComponent);
+
+var suitComponent = {
+	bindings: {
+		suit: '<',
+	},
+	template: `<span class="suit suit-{{suit.suit}}" ng-switch="suit.suit.toLowerCase()">
+			<span ng-switch-when="s" style="color: #000000;">&spades;</span>
+			<span ng-switch-when="c" style="color: #000000;">&clubs;</span>
+			<span ng-switch-when="d" style="color: #FC0000;">&diams;</span>
+			<span ng-switch-when="h" style="color: #FC0000;">&hearts;</span>
+			<span ng-switch-when="n">
+				<!-- &#127183; -->
+				<img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" alt="No Trumps" />
+			</span>
+	</span>`,
+	controller: function() {},
+	controllerAs: 'suit'
+};
+
+module.component('suit', suitComponent);

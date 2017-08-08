@@ -112,6 +112,26 @@ img {
   font-size: 0.5em;
 }
 
+.largest-text {
+  font-size: 5em !important;
+}
+
 h3 {
   color: #828282;
+}
+
+/* Dark */
+
+body.dark {
+    background: #262626;
+    color: #A0A0A0;
+}
+
+body.dark .form-control {
+    background-color: #606060;
+    color: #F0F0F0;
+}
+
+body.dark .card {
+    border-color: #A0A0A0;
 }

@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="index.css" />
     <script src="index.js"></script>
   </head>
-  <body ng-controller="AppController as App">
+  <body ng-controller="AppController as App" ng-class="{'dark': App.darkTheme}">
       <div class="container-fluid">
           <h1>Oh Hell!</h1>
           <div class="row">
@@ -43,7 +43,9 @@
                               </div>
                               <div class="col-sm-3">
                                   <h3>Cards</h3>
-                                  <p>{{App.game.rounds[App.game.currentRound.index].cardCount}} {{App.game.rounds[App.game.currentRound.index].card.suit}}</p>
+                                  <p class="largest-text">
+                                    {{App.game.rounds[App.game.currentRound.index].cardCount}}<suit suit="App.game.rounds[App.game.currentRound.index].card.suit"></suit>
+                                  </p>
                               </div>
                               <div class="col-sm-3">
                                   <h3>Bids</h3>
@@ -78,7 +80,7 @@
                           <div class="col-sm-1 player" ng-style="{'width': App.getColumnWidth()}" ng-repeat="(playerIndex, player) in App.game.settings.players">
                               <div class="text-ellipsis">{{player}}</div>
                               <div class="text-small">Points: {{App.calculateTotalPoints(playerIndex)}}</div>
-                              <div class="text-small">Bids: {{App.calculateAccurateBidCount(playerIndex, App.game.currentRound.index)}} / {{App.game.currentRound.index}} ({{App.calculateBidAccuracy(playerIndex, App.game.currentRound.index)}}%)</div>
+                              <!-- <div class="text-small">Bids: {{App.calculateAccurateBidCount(playerIndex, App.game.currentRound.index)}} / {{App.game.currentRound.index}} ({{App.calculateBidAccuracy(playerIndex, App.game.currentRound.index)}}%)</div> -->
                           </div>
                       </div>
                       <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in App.game.rounds" ng-show="App.showFullScore">
@@ -124,6 +126,7 @@
               }">
                   <div class="actions-wrapper" ng-if="App.game">
                       <button class="btn btn-primary" ng-click="App.toggleStoreView()" ng-if="!App.game.isFinished">Toggle Score View</button>
+                      <button class="btn btn-primary" ng-click="App.toggleTheme()">Toggle Theme</button>
                   </div>
                   <div class="stats-wrapper" ng-if="App.game">
                       <canvas id="chart-bid-scores" height="200" width="175"></canvas>
