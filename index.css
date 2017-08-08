@@ -135,3 +135,9 @@ body.dark .form-control {
 body.dark .card {
     border-color: #A0A0A0;
 }
+
+body.dark .card.card-suit-S,
+body.dark .card.card-suit-C,
+body.dark .card.card-suit-N {
+    color: #A0A0A0;
+}

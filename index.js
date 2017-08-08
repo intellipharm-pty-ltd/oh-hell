@@ -759,10 +759,10 @@ var suitComponent = {
 		suit: '<',
 	},
 	template: `<span class="suit suit-{{suit.suit}}" ng-switch="suit.suit.toLowerCase()">
-			<span ng-switch-when="s" style="color: #000000;">&spades;</span>
-			<span ng-switch-when="c" style="color: #000000;">&clubs;</span>
-			<span ng-switch-when="d" style="color: #FC0000;">&diams;</span>
-			<span ng-switch-when="h" style="color: #FC0000;">&hearts;</span>
+			<span ng-switch-when="s">&spades;</span>
+			<span ng-switch-when="c">&clubs;</span>
+			<span ng-switch-when="d">&diams;</span>
+			<span ng-switch-when="h">&hearts;</span>
 			<span ng-switch-when="n">
 				<!-- &#127183; -->
 				<img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" alt="No Trumps" />
