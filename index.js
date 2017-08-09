@@ -742,7 +742,7 @@ var cardComponent = {
 		name: '<',
 		size: '@',
 	},
-	template: `<div class="card card-suit-{{card.suit}} card-size-{{card.size}}">
+	template: `<div class="card suit-{{card.suit}} card-size-{{card.size}}">
 			<div class="card-name">
 				{{card.name}}
 			</div>

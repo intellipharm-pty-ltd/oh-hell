@@ -76,14 +76,16 @@ img {
     line-height: 70px;
 }
 
-.card.card-suit-S,
-.card.card-suit-C,
-.card.card-suit-N {
+/* suit */
+
+.suit-S,
+.suit-C,
+.suit-N {
     color: #000000;
 }
 
-.card.card-suit-D,
-.card.card-suit-H {
+.suit-D,
+.suit-H {
     color: #FC0000;
 }
 
