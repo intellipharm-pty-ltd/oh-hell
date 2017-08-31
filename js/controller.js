@@ -1,24 +1,9 @@
-var BID_ACCURACY = {
-	UNDERBID: 'Underbid',
-	ACCURATE: 'Accurate Bid',
-	OVERBID: 'Overbid'
-};
-
-var module = angular.module('OhHell', []);
-
-// bootstrap angular into the page
-angular.element(document).ready(() => {
-	angular.bootstrap(document.body, [module.name], {
-		strictDi: true
-	});
-});
-
 class AppController {
 	constructor ($scope, $timeout) {
 		this.$scope = $scope;
 		this.$timeout = $timeout;
 
-		this.clearPreviousGame();
+		// this.clearPreviousGame();
 
 		this.settings = this.getSettings();
 		this.game = this.getGame();
@@ -32,6 +17,12 @@ class AppController {
 			this.saveGame();
 			this.updateStats();
 		}, true);
+
+		this.BID_ACCURACY = {
+			UNDERBID: 'Underbid',
+			ACCURATE: 'Accurate Bid',
+			OVERBID: 'Overbid'
+		};
 	}
 
 	addNewPlayer () {
@@ -39,6 +30,22 @@ class AppController {
 			this.settings.players.push(this.newPlayerName);
 			this.newPlayerName = '';
 		}
+	}
+
+	movePlayerUp(index) {
+		if (index === 0) {
+			return false;
+		}
+
+		this.settings.players.splice(index - 1, 0, this.settings.players.splice(index, 1)[0]);
+	}
+
+	movePlayerDown(index) {
+		if (index === this.settings.players.length - 1) {
+			return false;
+		}
+
+		this.settings.players.splice(index + 1, 0, this.settings.players.splice(index, 1)[0]);
 	}
 
 	removePlayer (index) {
@@ -299,21 +306,21 @@ class AppController {
 		});
 
 		var datasets = [{
-			label: BID_ACCURACY.ACCURATE,
+			label: this.BID_ACCURACY.ACCURATE,
 			backgroundColor: this.getAccurateBidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
 			}),
 		}, {
-			label: BID_ACCURACY.UNDERBID,
+			label: this.BID_ACCURACY.UNDERBID,
 			backgroundColor: this.getUnderbidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
 				return 0;
 			}),
 		}, {
-			label: BID_ACCURACY.OVERBID,
+			label: this.BID_ACCURACY.OVERBID,
 			backgroundColor: this.getOverbidColour(),
 			stack: 1,
 			data: this.game.settings.players.map((player) => {
@@ -325,11 +332,11 @@ class AppController {
 			round.players.forEach((player, playerIndex) => {
 				var bidAccuracy = this.calculatePlayerRoundBidAccuracy(playerIndex, roundIndex);
 
-				if (bidAccuracy === BID_ACCURACY.UNDERBID) {
+				if (bidAccuracy === this.BID_ACCURACY.UNDERBID) {
 					datasets[1].data[playerIndex]++;
-				} else if (bidAccuracy === BID_ACCURACY.ACCURATE) {
+				} else if (bidAccuracy === this.BID_ACCURACY.ACCURATE) {
 					datasets[0].data[playerIndex]++;
-				} else if (bidAccuracy === BID_ACCURACY.OVERBID) {
+				} else if (bidAccuracy === this.BID_ACCURACY.OVERBID) {
 					datasets[2].data[playerIndex]++;
 				}
 			});
@@ -528,22 +535,16 @@ class AppController {
 		return '#e31a1c';
 	}
 
-	getColumnWidth () {
-		var columnCount = this.game.settings.players.length;
-
-		if (this.showFullScore) {
-			columnCount++;
-		}
-
-		return (100 / columnCount) + '%';
-	}
-
 	toggleStoreView () {
 		this.showFullScore = !this.showFullScore;
 	}
 
 	toggleTheme () {
 		this.darkTheme = !this.darkTheme;
+	}
+
+	createNewGame() {
+		this.game = null;
 	}
 
 	startRound () {
@@ -669,7 +670,7 @@ class AppController {
 		for (var i = 0; i < roundIndex; i++) {
 			let bidAccuracy = this.calculatePlayerRoundBidAccuracy(playerIndex, i);
 
-			if (bidAccuracy === BID_ACCURACY.ACCURATE) {
+			if (bidAccuracy === this.BID_ACCURACY.ACCURATE) {
 				accurateBids++;
 			}
 		}
@@ -690,15 +691,15 @@ class AppController {
 		}
 
 		if (tricks > bid) {
-			return BID_ACCURACY.UNDERBID;
+			return this.BID_ACCURACY.UNDERBID;
 		}
 
 		if (tricks === bid) {
-			return BID_ACCURACY.ACCURATE;
+			return this.BID_ACCURACY.ACCURATE;
 		}
 
 		if (tricks < bid) {
-			return BID_ACCURACY.OVERBID;
+			return this.BID_ACCURACY.OVERBID;
 		}
 
 		return null;
@@ -734,42 +735,4 @@ class AppController {
 
 AppController.$inject = ['$scope', '$timeout'];
 
-module.controller('AppController', AppController);
-
-var cardComponent = {
-	bindings: {
-		suit: '<',
-		name: '<',
-		size: '@',
-	},
-	template: `<div class="card suit-{{card.suit}} card-size-{{card.size}}">
-			<div class="card-name">
-				{{card.name}}
-			</div>
-			<suit suit="card.suit"></suit>
-	</div>`,
-	controller: function() {},
-	controllerAs: 'card'
-};
-
-module.component('card', cardComponent);
-
-var suitComponent = {
-	bindings: {
-		suit: '<',
-	},
-	template: `<span class="suit suit-{{suit.suit}}" ng-switch="suit.suit.toLowerCase()">
-			<span ng-switch-when="s">&spades;</span>
-			<span ng-switch-when="c">&clubs;</span>
-			<span ng-switch-when="d">&diams;</span>
-			<span ng-switch-when="h">&hearts;</span>
-			<span ng-switch-when="n">
-				<!-- &#127183; -->
-				<img src="http://www.peacemonger.org/assets/images/CS155-X.jpg" height="185px" alt="No Trumps" />
-			</span>
-	</span>`,
-	controller: function() {},
-	controllerAs: 'suit'
-};
-
-module.component('suit', suitComponent);
+angular.module('OhHell').controller('AppController', AppController);

@@ -7,7 +7,7 @@ body {
 }
 
 img {
-    vertical-align: top;
+    vertical-align: text-top;
 }
 
 .scores-wrapper .score .form-control {
@@ -138,8 +138,14 @@ body.dark .card {
     border-color: #A0A0A0;
 }
 
-body.dark .card.card-suit-S,
-body.dark .card.card-suit-C,
-body.dark .card.card-suit-N {
+body.dark .suit-S,
+body.dark .suit-C,
+body.dark .suit-N {
     color: #A0A0A0;
+}
+
+/* Settings */
+
+.settings-wrapper {
+  padding-bottom: 1em;
 }
