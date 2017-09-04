@@ -19,7 +19,7 @@
 
     <!-- local -->
     <link rel="stylesheet" href="styles/index.css" />
-    <link rel="stylesheet" href="styles/suits.css" />
+    <link rel="stylesheet" href="styles/icons.css" />
 
     <script src="js/index.js"></script>
     <script src="js/controller.js"></script>
@@ -29,13 +29,11 @@
       <div class="container-fluid">
           <h1>Oh Hell!</h1>
           <div class="row" ng-if="App.game">
-              <div class="col-xl-9">
-                  <div ng-if="App.game.isFinished">
-                      <div class="col-md text-ellipsis" style="font-size:3em;" ng-repeat="leader in App.game.leaderboard">
-                          {{leader.player}}
-                      </div>
-                      <div class="col-md" style="font-size:3em;" ng-repeat="leader in App.game.leaderboard">
-                          {{leader.points}}
+              <div class="col-xl-9 pb-3 mb-3 border border-top-0 border-right-0 border-left-0 border-dark">
+                  <div class="row" ng-if="App.game.isFinished">
+                      <div class="col-sm" style="font-size:3em;" ng-repeat="leader in App.game.leaderboard">
+                          <div class="text-ellipsis">{{leader.player}}</div>
+                          <div>{{leader.points}}</div>
                       </div>
                   </div>
                   <div ng-if="!App.game.isFinished">
@@ -154,15 +152,15 @@
                           <label for="new-player-name">New player name</label>
                           <div class="input-group">
                               <input type="text" class="form-control" id="new-player-name" placeholder="New player name" ng-model="App.newPlayerName" />
-                              <span class="input-group-addon btn btn-primary" ng-click="App.addNewPlayer()"><i class="glyphicon glyphicon-plus"></i> Add player</span>
+                              <span class="input-group-addon btn btn-primary" ng-click="App.addNewPlayer()"><i class="icons-user-plus"></i> Add player</span>
                           </div>
                       </div>
 
                       <div ng-repeat="(playerIndex, player) in App.settings.players">
                           {{player}}
-                          <button class="btn btn-primary" title="Move player up" ng-click="App.movePlayerUp(playerIndex)"><i class="glyphicon glyphicon-chevron-up"></i></button>
-                          <button class="btn btn-primary" title="Move player down" ng-click="App.movePlayerDown(playerIndex)"><i class="glyphicon glyphicon-chevron-down"></i></button>
-                          <button class="btn btn-danger" title="Remove player" ng-click="App.removePlayer(playerIndex)"><i class="glyphicon glyphicon-remove"></i></button>
+                          <button class="btn btn-primary" title="Move player up" ng-click="App.movePlayerUp(playerIndex)"><i class="icons-move-up"></i></button>
+                          <button class="btn btn-primary" title="Move player down" ng-click="App.movePlayerDown(playerIndex)"><i class="icons-move-down"></i></button>
+                          <button class="btn btn-danger" title="Remove player" ng-click="App.removePlayer(playerIndex)"><i class="icons-user-minus"></i></button>
                       </div>
 
                       <h3>Rounds</h3>

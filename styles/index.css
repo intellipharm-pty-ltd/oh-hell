@@ -135,6 +135,7 @@ body.dark .form-control {
 }
 
 body.dark .card {
+    background-color: #262626;
     border-color: #A0A0A0;
 }
 
