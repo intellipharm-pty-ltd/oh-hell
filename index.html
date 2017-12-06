@@ -26,9 +26,14 @@
     <script src="js/components.js"></script>
   </head>
   <body ng-controller="AppController as App" ng-class="{'dark': App.darkTheme}">
+  		<div class="topNav">
+  			<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+			  <a class="navbar-brand" href="#">Bloody Hell!</a>				  
+			</nav>
+  		</div>
       <div class="container-fluid">
-          <h1>Bloody Hell!</h1>
-          <div class="row" ng-if="App.game">
+          <div ng-if="App.game">      
+          <div class="row" >
               <div class="col-xl-9 pb-3 mb-3 border border-top-0 border-right-0 border-left-0 border-dark">
                   <div class="row" ng-if="App.game.isFinished">
                       <div class="col-sm" style="font-size:3em;" ng-repeat="leader in App.game.leaderboard">
@@ -129,18 +134,38 @@
                   </div>
               </div>
               <div class="col-xl-3">
-                  <div class="actions-wrapper">
-                      <button class="btn btn-primary" ng-click="App.toggleStoreView()" ng-if="!App.game.isFinished">Toggle Score View</button>
-                      <button class="btn btn-primary" ng-click="App.toggleTheme()">Toggle Theme</button>
-                      <button class="btn btn-primary" ng-click="App.createNewGame()">Create new game</button>
-                  </div>
-                  <div class="stats-wrapper">
-                      <canvas id="chart-bid-scores" height="200" width="175"></canvas>
-                      <canvas id="chart-bid-accuracy" height="200" width="250"></canvas>
-                      <canvas id="chart-bid-counts" height="200" width="250"></canvas>
-                  </div>
+                  <div class="actions-wrapper btn-group-vertical">
+                  	
+                    	<button class="btn btn-primary btn-sm" ng-click="App.toggleStoreView()" ng-if="!App.game.isFinished">Toggle Score View</button>
+                    
+                    
+                      <button class="btn btn-primary btn-sm" ng-click="App.toggleTheme()">Toggle Theme</button>
+                    
+                    
+                      <button class="btn btn-primary btn-sm" ng-click="App.createNewGame()">Create new game</button>
+                    
+                  </div>                 
               </div>
           </div>
+
+          <div class="row">
+           
+                
+                <div class="col-3">
+                    <canvas id="chart-bid-scores" height="300"></canvas>
+                </div>
+                <div class="col-3">
+                    <canvas id="chart-bid-accuracy" height="300"></canvas>
+                </div>
+                <div class="col-3">
+                    <canvas id="chart-bid-counts" height="300"></canvas>
+                </div>
+                
+         
+          </div>
+
+        </div>
+
           <div class="row" ng-if="!App.game">
               <div class="col-md">
                   <div class="settings-wrapper">
