@@ -57,7 +57,7 @@ img {
 /* Card */
 
 .card {
-    border: 1px solid #000000;
+    /* border: 1px solid #000000; */
     border-radius: 5px;
     margin: 0 auto;
 }
@@ -152,5 +152,9 @@ body.dark .suit-N {
 }
 
 .topNav {
-	margin-bottom:20px;'
+	margin-bottom:20px;
+}
+
+.app {
+    margin-bottom: 20px;
 }

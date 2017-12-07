@@ -28,13 +28,18 @@
   <body ng-controller="AppController as App" ng-class="{'dark': App.darkTheme}">
   		<div class="topNav">
   			<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-			  <a class="navbar-brand" href="#">Bloody Hell!</a>				  
+                <a class="navbar-brand" href="#">Bloody Hell!</a>	
+                <form class="form-inline ml-auto">
+                    <button class="btn btn-primary btn-sm" ng-click="App.toggleStoreView()" ng-if="!App.game.isFinished">Toggle Score View</button>
+                    <button class="btn btn-primary btn-sm" ng-click="App.toggleTheme()">Toggle Theme</button>
+                    <button class="btn btn-primary btn-sm" ng-click="App.createNewGame()">Create new game</button>                 
+                </form>		    
 			</nav>
   		</div>
       <div class="container-fluid">
-          <div ng-if="App.game">      
+          <div class="app" ng-if="App.game">      
           <div class="row" >
-              <div class="col-xl-9 pb-3 mb-3 border border-top-0 border-right-0 border-left-0 border-dark">
+              <div class="col-xl pb-3 mb-3 border border-top-0 border-right-0 border-left-0 border-dark">
                   <div class="row" ng-if="App.game.isFinished">
                       <div class="col-sm" style="font-size:3em;" ng-repeat="leader in App.game.leaderboard">
                           <div class="text-ellipsis">{{leader.player}}</div>
@@ -85,7 +90,6 @@
                               </div>
                           </div>
                       </div>
-
                       <div class="row players-wrapper text-center">
                           <div class="col-md" ng-show="App.showFullScore">Round</div>
                           <div class="col-md player" ng-repeat="(playerIndex, player) in App.game.settings.players">
@@ -132,40 +136,44 @@
                           </div>
                       </div>
                   </div>
-              </div>
-              <div class="col-xl-3">
-                  <div class="actions-wrapper btn-group-vertical">
-                  	
-                    	<button class="btn btn-primary btn-sm" ng-click="App.toggleStoreView()" ng-if="!App.game.isFinished">Toggle Score View</button>
-                    
-                    
-                      <button class="btn btn-primary btn-sm" ng-click="App.toggleTheme()">Toggle Theme</button>
-                    
-                    
-                      <button class="btn btn-primary btn-sm" ng-click="App.createNewGame()">Create new game</button>
-                    
-                  </div>                 
-              </div>
+              </div>              
           </div>
 
           <div class="row">
-           
-                
-                <div class="col-3">
-                    <canvas id="chart-bid-scores" height="300"></canvas>
+                <div class="col-md">
+                    <div class="card">
+                        <div class="card-header">
+                            Scores
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart-bid-scores" height="225px"></canvas>
+                        </div>
+                    </div>                    
                 </div>
-                <div class="col-3">
-                    <canvas id="chart-bid-accuracy" height="300"></canvas>
+
+                <div class="col-md">
+                    <div class="card">
+                        <div class="card-header">
+                            Accuracy
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart-bid-accuracy" height="225px"></canvas>
+                        </div>
+                    </div>  
                 </div>
-                <div class="col-3">
-                    <canvas id="chart-bid-counts" height="300"></canvas>
+                <div class="col-md">
+                    <div class="card">
+                        <div class="card-header">
+                            Bid Counts
+                        </div>
+                        <div class="card-body">
+                            <canvas id="chart-bid-counts" height="225px"></canvas>
+                        </div>
+                    </div>  
+                   
                 </div>
-                
-         
           </div>
-
         </div>
-
           <div class="row" ng-if="!App.game">
               <div class="col-md">
                   <div class="settings-wrapper">
