@@ -464,7 +464,7 @@ class AppController {
 			if (!isNaN(threshold)) {
 				if (!datasets[round.players.length]) {
 					datasets[round.players.length] = {
-						label: 'Blind Bid Threshold',
+						label: 'Blind Bid',
 						backgroundColor: this.getBlindBidColour(),
 						borderColor: this.getBlindBidColour(),
 						fill: false,
