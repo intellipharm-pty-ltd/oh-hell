@@ -93,7 +93,7 @@ class AppController {
 		var cardCount = this.game && this.game.isLeaderTied ? this.getHighestCardCount() : roundRange[roundIndex];
 
 		var round = {
-			card: this.drawFromDeck(deck, roundIndex === 0 ? null : rounds[roundIndex - 1].card.suit, this.settings.allowNoTrumps),
+			card: this.drawCardFromDeck(deck, roundIndex === 0 ? null : rounds[roundIndex - 1].card.suit, this.settings.allowNoTrumps),
 			cardCount: cardCount,
 			dealer: dealer,
 			players: [],
@@ -268,18 +268,20 @@ class AppController {
 		return totalPoints;
 	}
 
-	drawFromDeck(deck, previousSuit, allowNoTrumps) {
+	drawCardFromDeck(deck, previousSuit, allowNoTrumps) {
 		var index = this.generateRandomNumber(0, deck.length - 1);
-		var card = deck[index];
+		var card = Object.assign({}, deck[index]);
 
 		// if this card is already drawn then drawn a different card
 		if (card.drawn) {
-			return this.drawFromDeck(deck, previousSuit, allowNoTrumps);
+			return this.drawCardFromDeck(deck, previousSuit, allowNoTrumps);
 		}
 
 		if (allowNoTrumps && card.suit === previousSuit) {
 			card.suit = 'N';
 		}
+
+    card.drawn = true;
 
 		return card;
 	}
