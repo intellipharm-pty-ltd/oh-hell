@@ -1,0 +1,32 @@
+<table st-table="History.games" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Leaderboard</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="game in History.games">
+      <td>
+        {{ game.startTime | date : 'EEEE dd MMMM yyyy HH:mm:ss' }}
+      </td>
+      <td ng-if="game.isFinished">
+        {{ game.endTime | date : 'EEEE dd MMMM yyyy HH:mm:ss' }}
+      </td>
+      <td ng-if="!game.isFinished">
+        Incomplete (On Round {{ game.currentRound.index + 1 }})
+      </td>
+      <td>
+        <div ng-repeat="leaderboard in game.leaderboard">
+          {{ leaderboard.player }} - {{ leaderboard.points }}
+        </div>
+      </td>
+      <td>
+        <a class="btn btn-primary btn-sm" href="#!/game/{{game.id}}">Open Game</a>
+        <button type="button" class="btn btn-danger btn-sm" ng-click="History.deleteGame(game)">Delete Game</button>
+      </td>
+    </tr>
+  </tbody>
+</table>

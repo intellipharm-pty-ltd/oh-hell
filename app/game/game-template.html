@@ -1,0 +1,253 @@
+<div class="app" ng-if="Game.game">
+    <div class="row">
+        <div class="col-xl pb-3 mb-3 border border-top-0 border-right-0 border-left-0 border-dark">
+            <div class="row" ng-if="Game.game.isFinished">
+                <div class="col-sm" style="font-size:3em;" ng-repeat="leader in Game.game.leaderboard">
+                    <div class="text-ellipsis">{{leader.player}}</div>
+                    <div>{{leader.points}}</div>
+                </div>
+            </div>
+            <div ng-if="!Game.game.isFinished">
+                <div class="col-md text-center tie-break" ng-show="Game.game.isLeaderTied">
+                    Tie Break Round!
+                </div>
+                <div class="col-md text-center current-round" ng-show="!App.showFullScore">
+                    <div class="row">
+                        <div class="col-md">
+                            <h3>Dealer</h3>
+                            <p>{{Game.game.settings.players[Game.game.rounds[Game.game.currentRound.index].dealer]}}</p>
+                            <p>{{Game.calculateBidderRestriction(Game.game.currentRound.index)}}</p>
+                        </div>
+                        <div class="col-md">
+                            <h3>Cards</h3>
+                            <p class="largest-text">
+                                {{Game.game.rounds[Game.game.currentRound.index].cardCount}}
+                                <suit suit="Game.game.rounds[Game.game.currentRound.index].card.suit"></suit>
+                            </p>
+                        </div>
+                        <div class="col-md d-none d-lg-block">
+                            <h3>Bids</h3>
+                            <p>
+                                There are
+                                <span ng-class="{
+                            'underbid': Game.calculateTotalBids(Game.game.currentRound.index) < Game.game.rounds[Game.game.currentRound.index].cardCount,
+                            'accurate-bid': Game.calculateTotalBids(Game.game.currentRound.index) === Game.game.rounds[Game.game.currentRound.index].cardCount,
+                            'overbid': Game.calculateTotalBids(Game.game.currentRound.index) > Game.game.rounds[Game.game.currentRound.index].cardCount,
+                          }">{{Game.calculateTotalBids(Game.game.currentRound.index)}} </span> bids from <b>{{Game.game.rounds[Game.game.currentRound.index].cardCount}}</b> possible wins
+                            </p>
+                            <p>{{Game.calculateBlindBidsDescription(Game.game.currentRound.index)}}</p>
+                        </div>
+                        <div class="col-md" ng-if="Game.game.settings.allowSuperTrump">
+                            <h3>Super Trump</h3>
+                            <p ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit === 'N'">
+                                N/A for No Trumps
+                            </p>
+                            <card ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit !== 'N'" suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="Game.game.rounds[Game.game.currentRound.index].card.name" size="small"></card>
+                        </div>
+                    </div>
+                </div>
+                <div class="row players-wrapper text-center">
+                    <div class="col-md" ng-show="App.showFullScore">Round</div>
+                    <div class="col-md player" ng-repeat="(playerIndex, player) in Game.game.settings.players">
+                        <div class="text-ellipsis">{{player}}</div>
+                        <div class="text-small">Points: {{Game.gameService.calculateTotalPoints(Game.game, playerIndex)}}</div>
+                        <!-- <div class="text-small">Bids: {{Game.calculateAccurateBidCount(playerIndex, Game.game.currentRound.index)}} / {{Game.game.currentRound.index}} ({{Game.calculateBidAccuracy(playerIndex, Game.game.currentRound.index)}}%)</div> -->
+
+                        <div class="round-wrapper" ng-show="!App.showFullScore">
+                            <div class="col-md" ng-if="!Game.game.currentRound.started">
+                                <label>
+                                    Bid
+                                    <input type="number" min="0" max="10" class="form-control" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].bid" focus-if="playerIndex === 0" />
+                                </label>
+                                <label ng-show="Game.eligibleForBlindBid(playerIndex, Game.game.currentRound.index)">
+                                    Blind Bid
+                                    <input type="checkbox" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].blind" />
+                                </label>
+                            </div>
+
+                            <div class="col-md" ng-if="Game.game.currentRound.started">
+                                <label>
+                                    Tricks {{Game.game.rounds[Game.game.currentRound.index].players[playerIndex].bid}} /
+                                    <input type="number" min="0" max="10" class="form-control" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].tricks" focus-if="playerIndex === 0" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in Game.game.rounds" ng-show="App.showFullScore">
+                    <div class="col-md">{{round.cardCount}}{{round.card.suit}} - {{Game.game.settings.players[round.dealer]}}</div>
+                    <div class="col-md score" ng-repeat="(playerIndex, player) in Game.game.settings.players">
+                        <input type="checkbox" ng-model="Game.game.rounds[roundIndex].players[playerIndex].blind" ng-show="Game.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
+                        <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="Game.game.rounds[roundIndex].players[playerIndex].bid" />
+                        <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="Game.game.rounds[roundIndex].players[playerIndex].tricks" /> {{Game.game.rounds[roundIndex].players[playerIndex].points}}
+                    </div>
+                </div>
+
+                <div class="row" ng-show="!App.showFullScore">
+                    <div class="col-md">
+                        <button class="btn btn-primary" ng-click="Game.startRound()" ng-show="!Game.game.currentRound.started">Start Round</button>
+                        <button class="btn btn-primary" ng-click="Game.nextRound()" ng-show="Game.game.currentRound.started">Next Round</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header">
+                    Scores
+                </div>
+                <div class="card-body">
+                    <canvas id="chart-bid-scores" height="150px"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header">
+                    Accuracy
+                </div>
+                <div class="card-body">
+                    <canvas id="chart-bid-accuracy" height="150px"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md">
+            <div class="card">
+                <div class="card-header">
+                    Bid Counts
+                </div>
+                <div class="card-body">
+                    <canvas id="chart-bid-counts" height="150px"></canvas>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row" ng-if="!Game.game">
+    <div class="col-md">
+        <div class="settings-wrapper">
+            <h2>Start new game</h2>
+
+            <h3>Players</h3>
+
+            <div class="form-group">
+                <label for="new-player-name">New player name</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="new-player-name" placeholder="New player name" ng-model="Game.newPlayerName" />
+                    <span class="input-group-addon btn btn-primary" ng-click="Game.addNewPlayer()"><i class="icons-user-plus"></i> Add player</span>
+                </div>
+            </div>
+
+            <div ng-repeat="(playerIndex, player) in Game.settings.players">
+                {{player}}
+                <button class="btn btn-primary" title="Move player up" ng-click="Game.movePlayerUp(playerIndex)"><i class="icons-move-up"></i></button>
+                <button class="btn btn-primary" title="Move player down" ng-click="Game.movePlayerDown(playerIndex)"><i class="icons-move-down"></i></button>
+                <button class="btn btn-danger" title="Remove player" ng-click="Game.removePlayer(playerIndex)"><i class="icons-user-minus"></i></button>
+            </div>
+
+            <h3>Rounds</h3>
+
+            <div class="form-group">
+                <label for="first-round">Number of cards in first round</label>
+                <input type="number" min="1" max="10" class="form-control" id="first-round" placeholder="Number of cards in first round" ng-model="Game.settings.cardsInFirstRound" />
+            </div>
+            <div class="form-group">
+                <label for="first-round">Number of cards in last round</label>
+                <input type="number" min="1" max="10" class="form-control" id="last-round" placeholder="Number of cards in last round" ng-model="Game.settings.cardsInLastRound" />
+            </div>
+            <div class="form-group">
+                <label for="mirror-round">Should the rounds be mirrored?</label>
+                <input type="checkbox" id="mirror-round" ng-model="Game.settings.mirrorRounds" />
+            </div>
+
+            <h3>Trumps</h3>
+
+            <div class="form-group">
+                <label for="allow-no-trumps">Allow no trumps?</label>
+                <input type="checkbox" id="allow-no-trumps" ng-model="Game.settings.allowNoTrumps" />
+            </div>
+
+            <div class="form-group">
+                <label for="allow-super-trump">Show super trump? (The card drawn to determine the suit of the round becomes the highest trump card for that round)</label>
+                <input type="checkbox" id="allow-super-trump" ng-model="Game.settings.allowSuperTrump" />
+            </div>
+
+            <h3>Points Per Trick</h3>
+
+            <div class="form-group">
+                <label for="points-win-per-trick">Win points per trick won?</label>
+                <input type="checkbox" id="points-win-per-trick" ng-model="Game.settings.winPointsPerTrick" />
+            </div>
+            <div class="form-group">
+                <label for="points-win-per-trick-successful">Only if successful?</label>
+                <input type="checkbox" id="points-win-per-trick-successful" ng-model="Game.settings.winPointsPerTrickIfSuccessful" />
+            </div>
+            <div class="form-group">
+                <label for="points-win-per-trick-zero">0 should win half a point?</label>
+                <input type="checkbox" id="points-win-per-trick-zero" ng-model="Game.settings.winPointsPerTrickIfZero" />
+            </div>
+            <div class="form-group">
+                <label for="points-lose-per-difference">Lose points per trick/bid difference?</label>
+                <input type="checkbox" id="points-lose-per-difference" ng-model="Game.settings.losePointsPerDifference" />
+            </div>
+
+            <h3>Points On Success</h3>
+
+            <div class="form-group">
+                <label for="points-successful-bid">Fixed bonus points for successful bid</label>
+                <input type="number" min="0" max="30" class="form-control" id="points-successful-bid" placeholder="Fixed bonus points for successful bid" ng-model="Game.settings.pointsSuccessfulBid" />
+            </div>
+
+            <div class="form-group">
+                <label for="points-successful-bid-variable">Award bonus points equal to the number of cards dealt?</label>
+                <input type="checkbox" id="points-successful-bid-variable" ng-model="Game.settings.pointsSuccessfulVariable" />
+            </div>
+
+            <div class="form-group">
+                <label for="points-successful-bid-inverse">Award bonus points inverse to the number of cards dealt?</label>
+                <input type="checkbox" id="points-successful-bid-inverse" ng-model="Game.settings.pointsSuccessfulInverse" />
+            </div>
+
+            <h3>Points On Failure</h3>
+
+            <div class="form-group">
+                <label for="points-unsuccessful-bid">Bonus points for unsuccessful bid</label>
+                <input type="number" min="-30" max="0" class="form-control" id="points-unsuccessful-bid" placeholder="Bonus points for unsuccessful bid" ng-model="Game.settings.pointsUnsuccessfulBid" />
+            </div>
+
+            <div class="form-group">
+                <label for="points-unsuccessful-bid-variable">Reduce bonus points equal to the number of cards dealt?</label>
+                <input type="checkbox" id="points-unsuccessful-bid-variable" ng-model="Game.settings.pointsUnsuccessfulVariable" />
+            </div>
+
+            <div class="form-group">
+                <label for="points-unsuccessful-bid-inverse">Reduce bonus points inverse to the number of cards dealt?</label>
+                <input type="checkbox" id="points-unsuccessful-bid-inverse" ng-model="Game.settings.pointsUnsuccessfulInverse" />
+            </div>
+
+            <h3>Blind Bidding</h3>
+
+            <div class="form-group">
+                <label for="blind-bid-points-threshold">Blind bidding points behind leader threshold</label>
+                <input type="number" min="0" max="30" class="form-control" id="blind-bid-points-threshold" placeholder="Blind bidding points behind leader threshold" ng-model="Game.settings.blindBidThreshold" />
+            </div>
+
+            <div class="form-group">
+                <label for="blind-bid-bonus">Blind bidding fixed bonus points</label>
+                <input type="number" min="0" max="30" class="form-control" id="blind-bid-bonus" placeholder="Blind bidding bonus points" ng-model="Game.settings.blindBidBonus" />
+            </div>
+
+            <div class="form-group">
+                <label for="blind-bid-double">Blind bidding should double the points in the round?</label>
+                <input type="checkbox" id="blind-bid-double" ng-model="Game.settings.blindBidDouble" />
+            </div>
+
+            <button class="btn btn-success" ng-click="Game.startGame()">Start game</button>
+        </div>
+    </div>
+</div>

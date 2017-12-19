@@ -1,22 +1,34 @@
-class AppController {
-	constructor ($scope, $timeout) {
+import { GameService } from '/app/services/game.js';
+import { StorageService } from '/app/services/storage.js';
+
+export class GameController {
+	constructor ($scope, $timeout, $route, $location) {
 		this.$scope = $scope;
 		this.$timeout = $timeout;
+		this.$route = $route;
+		this.$location = $location;
 
-		// this.clearPreviousGame();
+		this.gameService = new GameService();
+		this.storageService = new StorageService();
 
-		this.settings = this.getSettings();
-		this.game = this.getGame();
-		this.showFullScore = false;
+		this.getSettings().then((settings) => {
+			this.settings = settings;
 
-		$scope.$watch('App.settings', (new_val, old_val) => {
-			this.saveSettings();
-		}, true);
+			$scope.$watch('Game.settings', (new_val, old_val) => {
+				this.saveSettings();
+			}, true);
+			$scope.$apply();
+		});
 
-		$scope.$watch('App.game', (new_val, old_val) => {
-			this.saveGame();
-			this.updateStats();
-		}, true);
+		this.getGame(_.parseInt($route.current.params.id)).then((game) => {
+			this.game = game;
+
+			$scope.$watch('Game.game', (new_val, old_val) => {
+				this.saveGame(this.game);
+				this.updateStats();
+			}, true);
+			$scope.$apply();
+		});
 
 		this.BID_ACCURACY = {
 			UNDERBID: 'Underbid',
@@ -63,7 +75,9 @@ class AppController {
 			rounds.push(this.generateRound(rounds, deck));
 		}
 
-		this.game = {
+		var game = {
+			id: new Date().getTime(),
+			startTime: new Date(),
 			settings: this.settings,
 			rounds: rounds,
 			deck: deck,
@@ -73,6 +87,14 @@ class AppController {
 				started: false,
 			},
 		};
+
+		this.saveGame(game).then(() => {
+			var path = `/game/${game.id}`;
+
+			console.log('Game started - redirecting to ' + path);
+			this.$location.path(path);
+			this.$scope.$apply();
+		});
 	}
 
 	generateRound(rounds, deck) {
@@ -90,7 +112,7 @@ class AppController {
 			}
 		}
 
-		var cardCount = this.game && this.game.isLeaderTied ? this.getHighestCardCount() : roundRange[roundIndex];
+		var cardCount = this.game && this.game.isLeaderTied ? this.gameService.getHighestCardCount(this.game) : roundRange[roundIndex];
 
 		var round = {
 			card: this.drawCardFromDeck(deck, roundIndex === 0 ? null : rounds[roundIndex - 1].card.suit, this.settings.allowNoTrumps),
@@ -110,19 +132,17 @@ class AppController {
 	}
 
 	getSettings () {
-		var settings = localStorage.getItem('oh-hell-settings');
+		return new Promise((resolve, reject) => {
+			this.storageService.getSettings().then((settings) => {
+				if (!settings) {
+					settings = this.getDefaultSettings();
+				}
 
-		try {
-			settings = JSON.parse(settings);
-		} catch (err) {
-			settings = null;
-		}
-
-		if (!settings) {
-			settings = this.getDefaultSettings();
-		}
-
-		return settings;
+				resolve(settings);
+			}, () => {
+				resolve(null);
+			});
+		});
 	}
 
 	getDefaultSettings () {
@@ -132,23 +152,39 @@ class AppController {
 	}
 
 	saveSettings () {
-		localStorage.setItem('oh-hell-settings', JSON.stringify(this.settings));
+		this.storageService.saveSettings(this.settings);
 	}
 
-	getGame () {
-		var game = localStorage.getItem('oh-hell-game');
+	getGame (id) {
+		return new Promise((resolve, reject) => {
+			if (id === 0) {
+				return resolve(null);
+			}
 
-		try {
-			game = JSON.parse(game);
-		} catch (err) {
-			game = null;
-		}
-
-		return game;
+			if (id) {
+				this.storageService.findGameById(id).then((game) => {
+					console.log('Game loaded', id, game);
+					resolve(game);
+				}, (error) => {
+					console.log('Game not loaded', id, error);
+					resolve(null);
+				});
+			} else {
+				this.storageService.getLatestGame().then((game) => {
+					resolve(game);
+				}, () => {
+					resolve(null);
+				});
+			}
+		});
 	}
 
-	saveGame () {
-		localStorage.setItem('oh-hell-game', JSON.stringify(this.game));
+	saveGame (game) {
+		return this.storageService.saveGame(game).then(() => {
+			console.log('Game saved successfully', game);
+		}, (error) => {
+			console.warn('Game not saved', game, error);
+		});
 	}
 
 	roundRange (start, end, mirror) {
@@ -172,101 +208,9 @@ class AppController {
 	    return input;
 	}
 
-	calculateRoundPoints (playerIndex, roundIndex) {
-		var cards = this.game.rounds[roundIndex].cardCount;
-		var bid = parseInt(this.game.rounds[roundIndex].players[playerIndex].bid);
-		var tricks = parseInt(this.game.rounds[roundIndex].players[playerIndex].tricks);
-		var successful = tricks === bid;
 
-		if (isNaN(bid) || isNaN(tricks)) {
-			return null;
-		}
 
-		var points = 0;
 
-		// award points per trick
-
-		if (this.game.settings.winPointsPerTrick) {
-			if (successful || !this.game.settings.winPointsPerTrickIfSuccessful) {
-				if (tricks === 0 && this.game.settings.winPointsPerTrickIfZero) {
-					points += 0.5;
-				} else {
-					points += tricks;
-				}
-			}
-		}
-
-		// lose points per trick different
-
-		if (this.game.settings.losePointsPerDifference) {
-			points -= Math.abs(tricks - bid);
-		}
-
-		// bonus points on successful bid
-
-		var bonusSuccessful = parseInt(this.game.settings.pointsSuccessfulBid);
-		if (successful && !isNaN(bonusSuccessful) ) {
-			points += bonusSuccessful;
-		}
-
-		if (successful && this.game.settings.pointsSuccessfulVariable) {
-			points += cards;
-		}
-
-		if (successful && this.game.settings.pointsSuccessfulInverse) {
-			points += (this.getHighestCardCount() - cards + 1);
-		}
-
-		// negative points on unsuccessful bid
-
-		var bonusUnsuccessful = parseInt(this.game.settings.pointsUnsuccessfulBid);
-		if (!successful && !isNaN(bonusUnsuccessful)) {
-			points -= bonusUnsuccessful;
-		}
-
-		if (!successful && this.game.settings.pointsUnsuccessfulVariable) {
-			points -= cards;
-		}
-
-		if (!successful && this.game.settings.pointsUnsuccessfulInverse) {
-			points -= (this.getHighestCardCount() - cards + 1);
-		}
-
-		// blind bid
-
-		var blindBidBonus = parseInt(this.game.settings.blindBidBonus);
-		if (successful && this.game.rounds[roundIndex].players[playerIndex].blind && !isNaN(blindBidBonus)) {
-			points += blindBidBonus;
-		}
-
-		if (successful && this.game.rounds[roundIndex].players[playerIndex].blind && this.game.settings.blindBidDouble) {
-			points *= 2;
-		}
-
-		// set the points
-
-		this.game.rounds[roundIndex].players[playerIndex].points = points;
-
-		return points;
-	}
-
-	calculateTotalPoints (playerIndex, roundIndex) {
-		var totalPoints = 0;
-
-		this.game.rounds.forEach((round, i) => {
-			if (roundIndex && i >= roundIndex) {
-				return true;
-			}
-
-			var roundPoints = this.calculateRoundPoints(playerIndex, i);
-
-			if (roundPoints) {
-				totalPoints += roundPoints;
-			}
-		});
-
-		return totalPoints;
-	}
 
 	drawCardFromDeck(deck, previousSuit, allowNoTrumps) {
 		var index = this.generateRandomNumber(0, deck.length - 1);
@@ -371,7 +315,7 @@ class AppController {
 
 	updateBidCountChart () {
 		var labels = [];
-		var highestCardCount = this.getHighestCardCount();
+		var highestCardCount = this.gameService.getHighestCardCount(this.game);
 
 		for (var i = 0; i <= highestCardCount; i++) {
 			labels.push(i + ' Bid');
@@ -537,14 +481,6 @@ class AppController {
 		return '#e31a1c';
 	}
 
-	toggleStoreView () {
-		this.showFullScore = !this.showFullScore;
-	}
-
-	toggleTheme () {
-		this.darkTheme = !this.darkTheme;
-	}
-
 	createNewGame() {
 		this.game = null;
 	}
@@ -555,13 +491,15 @@ class AppController {
 
 	nextRound () {
 		if (this.game.currentRound.index === (this.game.rounds.length - 1)) {
-			this.game.leaderboard = this.getLeaderboard();
+			this.game.leaderboard = this.gameService.getLeaderboard(this.game);
 			this.game.isLeaderTied = this.isLeaderTied(this.game.leaderboard);
 			this.game.isFinished = !this.game.isLeaderTied;
 
 			if (this.game.isLeaderTied) {
 				this.game.rounds.push(this.generateRound(this.game.rounds, this.game.deck));
 				this.proceedToNextRound();
+			} else {
+				this.game.endTime = new Date();
 			}
 		} else {
 			this.proceedToNextRound();
@@ -578,7 +516,7 @@ class AppController {
 		var leader = 0;
 
 		this.game.settings.players.forEach((player, i) => {
-			playerPoints[i] = this.calculateTotalPoints(i, roundIndex);
+			playerPoints[i] = this.gameService.calculateTotalPoints(this.game, i, roundIndex);
 
 			if (playerPoints[i] >= playerPoints[leader]) {
 				leader = i;
@@ -593,22 +531,7 @@ class AppController {
 		return canBlindBid;
 	}
 
-	getLeaderboard() {
-		var leaderboard = [];
 
-		this.game.settings.players.forEach((player, playerIndex) => {
-			leaderboard[playerIndex] = {
-				player: player,
-				points: this.calculateTotalPoints(playerIndex),
-			};
-		});
-
-		leaderboard.sort((a, b) => {
-			return b.points - a.points;
-		});
-
-		return leaderboard;
-	}
 
 	isLeaderTied(leaderboard) {
 		return leaderboard[0].points === leaderboard[1].points;
@@ -707,15 +630,7 @@ class AppController {
 		return null;
 	}
 
-	getHighestCardCount() {
-		return Math.max(this.game.settings.cardsInFirstRound, this.game.settings.cardsInLastRound);
-	}
 
-	clearPreviousGame() {
-		if (confirm('Clear Local Storage?')) {
-			window.localStorage.clear();
-		}
-	}
 
 	generateDeck() {
 		var names = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -735,6 +650,4 @@ class AppController {
 	}
 }
 
-AppController.$inject = ['$scope', '$timeout'];
-
-angular.module('OhHell').controller('AppController', AppController);
+GameController.$inject = ['$scope', '$timeout', '$route', '$location'];
