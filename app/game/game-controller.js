@@ -1,5 +1,5 @@
-import { GameService } from '/app/services/game.js';
-import { StorageService } from '/app/services/storage.js';
+import { GameService } from '../services/game.js';
+import { StorageService } from '../services/storage.js';
 
 export class GameController {
 	constructor ($scope, $timeout, $route, $location) {

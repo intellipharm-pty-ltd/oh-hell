@@ -1,11 +1,11 @@
 // app
-import { routes } from '/app/routes.js';
-import { AppController } from '/app/app-controller.js';
+import { routes } from './app/routes.js';
+import { AppController } from './app/app-controller.js';
 
 // components
-import { cardComponent } from '/app/components/card.js';
-import { focusIf } from '/app/components/focus-if.js';
-import { suitComponent } from '/app/components/suit.js';
+import { cardComponent } from './app/components/card.js';
+import { focusIf } from './app/components/focus-if.js';
+import { suitComponent } from './app/components/suit.js';
 
 
 var module = angular.module('OhHell', [

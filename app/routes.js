@@ -1,5 +1,5 @@
-import { GameController } from '/app/game/game-controller.js';
-import { HistoryController } from '/app/history/history-controller.js';
+import { GameController } from './game/game-controller.js';
+import { HistoryController } from './history/history-controller.js';
 
 export function routes ($routeProvider) {
   $routeProvider
