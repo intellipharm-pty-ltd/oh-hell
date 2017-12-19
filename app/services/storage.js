@@ -40,6 +40,10 @@ export class StorageService {
 
   saveGame (game) {
     return new Promise((resolve, reject) => {
+      if (!game) {
+        return reject(null);
+      }
+      
       this.getAllGames().then((games) => {
         if (!games) {
           games = [];
