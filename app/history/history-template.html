@@ -3,6 +3,7 @@
     <tr>
       <th>Start Time</th>
       <th>End Time</th>
+      <th>Rounds</th>
       <th>Leaderboard</th>
       <th>Actions</th>
     </tr>
@@ -19,6 +20,9 @@
         Incomplete (On Round {{ game.currentRound.index + 1 }})
       </td>
       <td>
+        {{ game.rounds.length }}
+      </td>
+      <td>
         <div ng-repeat="leaderboard in game.leaderboard">
           {{ leaderboard.player }} - {{ leaderboard.points }}
         </div>
@@ -30,3 +34,49 @@
     </tr>
   </tbody>
 </table>
+
+<div class="row">
+  <div class="col-sm">
+    <input type="checkbox" id="history-charts-average" name="history-charts-average" ng-change="History.loadCharts()" ng-model="History.useAverage" />
+    <label for="history-charts-average">Use Average</label>
+  </div>
+  <div class="col-sm">
+    <input type="checkbox" id="history-charts-incomplete" name="history-charts-incomplete" ng-change="History.loadCharts()" ng-model="History.useIncomplete" />
+    <label for="history-charts-incomplete">Use Incomplete Games</label>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">
+                Scores
+            </div>
+            <div class="card-body">
+                <canvas id="chart-bid-scores" height="150px"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">
+                Accuracy
+            </div>
+            <div class="card-body">
+                <canvas id="chart-bid-accuracy" height="150px"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">
+                Bid Counts
+            </div>
+            <div class="card-body">
+                <canvas id="chart-bid-counts" height="150px"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>

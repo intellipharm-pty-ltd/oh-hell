@@ -1,7 +1,7 @@
 import { GameController } from './game/game-controller.js';
 import { HistoryController } from './history/history-controller.js';
 
-export function routes ($routeProvider) {
+export function routes($routeProvider) {
   $routeProvider
     .when('/game/:id?', {
       templateUrl: './app/game/game-template.html',
@@ -14,7 +14,7 @@ export function routes ($routeProvider) {
       controllerAs: 'History'
     })
     .otherwise({
-      redirectTo:'/game'
+      redirectTo: '/game'
     });
 }
 

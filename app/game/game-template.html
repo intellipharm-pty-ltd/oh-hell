@@ -51,7 +51,6 @@
                     <div class="col-md player" ng-repeat="(playerIndex, player) in Game.game.settings.players">
                         <div class="text-ellipsis">{{player}}</div>
                         <div class="text-small">Points: {{Game.gameService.calculateTotalPoints(Game.game, playerIndex)}}</div>
-                        <!-- <div class="text-small">Bids: {{Game.calculateAccurateBidCount(playerIndex, Game.game.currentRound.index)}} / {{Game.game.currentRound.index}} ({{Game.calculateBidAccuracy(playerIndex, Game.game.currentRound.index)}}%)</div> -->
 
                         <div class="round-wrapper" ng-show="!App.showFullScore">
                             <div class="col-md" ng-if="!Game.game.currentRound.started">
