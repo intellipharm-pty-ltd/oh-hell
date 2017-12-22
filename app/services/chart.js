@@ -249,7 +249,7 @@ export class ChartService {
             blindBidThreshold = roundHighestPoints === null ? null : 0;
           }
 
-          datasets[round.players.length].data.push(blindBidThreshold);
+          datasets[round.players.length].data.push({points: blindBidThreshold});
         }
       });
     });
