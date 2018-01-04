@@ -15,11 +15,38 @@ export class HistoryController {
 
   loadGames() {
     this.storageService.getAllGames().then((games) => {
+      // game stats
       this.games = _.map(games, (game) => {
         game.leaderboard = this.gameService.getLeaderboard(game);
         return game;
       });
 
+      // individual player stats
+      this.stats = {};
+      _.forEach(games, (game) => {
+        _.forEach(game.settings.players, (player) => {
+          if (!this.stats.hasOwnProperty(player)) {
+            this.stats[player] = {
+              wins: 0,
+              blindBids: 0,
+            };
+          }
+        });
+
+        if (game.isFinished) {
+          this.stats[game.leaderboard[0].player].wins++;
+        }
+
+        _.forEach(game.rounds, (round) => {
+          _.forEach(round.players, (player, playerIndex) => {
+            if (player.blind) {
+              this.stats[game.settings.players[playerIndex]].blindBids++;
+            }
+          });
+        });
+      });
+
+      // create the charts
       this.loadCharts();
 
       this.$scope.$apply();
