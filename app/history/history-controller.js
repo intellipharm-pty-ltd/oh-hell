@@ -27,10 +27,13 @@ export class HistoryController {
         _.forEach(game.settings.players, (player) => {
           if (!this.stats.hasOwnProperty(player)) {
             this.stats[player] = {
+              games: 0,
               wins: 0,
               blindBids: 0,
             };
           }
+
+          this.stats[player].games++;
         });
 
         if (game.isFinished) {
@@ -63,6 +66,21 @@ export class HistoryController {
     this.chartService.displayBidAccuracyChart(this.games, this.useAverage, this.useIncomplete);
     this.chartService.displayBidCountChart(this.games, this.useAverage, this.useIncomplete);
     this.chartService.displayScoresChart(this.games, this.useAverage, this.useIncomplete);
+  }
+
+  exportAllGames() {
+    this.storageService.exportAllGames();
+  }
+
+  exportGame(id) {
+    this.storageService.exportGame(id);
+  }
+
+  importFile() {
+    this.storageService.importFile().then((count) => {
+      this.loadGames();
+      alert('Imported ' + count + ' new games');
+    });
   }
 }
 

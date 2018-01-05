@@ -118,4 +118,117 @@ export class StorageService {
   getSettings() {
     return this.settings.getItem(this.keys.settings);
   }
+
+  exportAllGames() {
+    return new Promise((resolve, reject) => {
+      this.getAllGames().then((games) => {
+        if (!games) {
+          return resolve(null);
+        }
+
+        var file = new Blob([JSON.stringify(games)], {type: 'json'});
+
+        // create download anchor
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = `oh-hell-all-games-${moment().format('YYYY-MM-DD-HH-mm-ss')}.json`;
+        document.body.appendChild(a);
+
+        // click anchor to download file
+        a.click();
+
+        // delete download anchor
+        setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            resolve();
+        }, 0);
+      }, reject);
+    });
+  }
+
+  exportGame(id) {
+    return new Promise((resolve, reject) => {
+      this.findGameById(id).then((game) => {
+        if (!game) {
+          return resolve(null);
+        }
+
+        var file = new Blob([JSON.stringify(game)], {type: 'json'});
+
+        // create download anchor
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(file);
+        a.href = url;
+        a.download = `oh-hell-game-${moment(game.startTime).format('YYYY-MM-DD-HH-mm-ss')}.json`;
+        document.body.appendChild(a);
+
+        // click anchor to download file
+        a.click();
+
+        // delete download anchor
+        setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            resolve();
+        }, 0);
+      }, reject);
+    });
+  }
+
+  importFile() {
+    return new Promise((resolve, reject) => {
+      var input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.multiple = false;
+      input.addEventListener('change', (event) => {
+        var files = event.target.files;
+
+        if (files && files.length === 1) {
+          var reader = new FileReader();
+          reader.onload = () => {
+            var text = reader.result;
+
+            try {
+              var games = JSON.parse(text);
+              var count = 0;
+              var promises = [];
+
+              if (!Array.isArray(games)) {
+                games = [games];
+              }
+
+              games.forEach((game) => {
+                promises.push(new Promise((resolve, reject) => {
+                  Promise.all(promises).then(() => {
+                    this.findGameById(game.id).then((g) => {
+                      // game already exists so don't override
+                      if (g) {
+                        resolve();
+                        // add game to history
+                      } else {
+                        this.saveGame(game).then(resolve, reject);
+                        count++;
+                      }
+                    });
+                  });
+                }));
+              });
+
+              Promise.all(promises).then(() => {
+                resolve(count);
+              }, reject);
+            } catch (e) {
+              reject(e);
+            }
+          };
+
+          reader.readAsText(files[0]);
+        }
+      });
+      input.click();
+    });
+  }
 }
