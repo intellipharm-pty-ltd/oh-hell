@@ -160,30 +160,27 @@
                 <input type="number" min="1" max="10" class="form-control" id="last-round" placeholder="Number of cards" ng-model="Game.settings.cardsInLastRound" />
             </div>
             <div class="form-group">
-                <label for="mirror-round" class="custom-control custom-checkbox">
+                <div class="custom-control custom-checkbox">
                     <input type="checkbox" id="mirror-round" ng-model="Game.settings.mirrorRounds" class="custom-control-input">
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Mirror rounds</span>
-                </label>
+                    <label for="mirror-round" class="custom-control-label">Mirror rounds</label>
+                </div>
             </div>
 
             <h3>Trumps</h3>
-            
+
             <div class="form-row">
                 <div class="col">
-                    <label for="allow-no-trumps" class="custom-control custom-checkbox">
+                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" id="allow-no-trumps" ng-model="Game.settings.allowNoTrumps" class="custom-control-input">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Don't allow trumps</span>
-                    </label>
+                        <label for="allow-no-trumps" class="custom-control-label">Don't allow trumps</label>
+                    </div>
                 </div>
 
                 <div class="col">
-                    <label for="allow-super-trump" class="custom-control custom-checkbox">
+                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" id="allow-super-trump" ng-model="Game.settings.allowSuperTrump" class="custom-control-input">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Show super trump</span>
-                    </label>
+                        <label for="allow-super-trump" class="custom-control-label">Show super trump</label>
+                    </div>
                 </div>
             </div>
 
@@ -191,35 +188,31 @@
 
             <div class="form-row">
                 <div class="col">
-                    <label for="points-win-per-trick" class="custom-control custom-checkbox">
-                        <input type="checkbox" id="points-win-per-trick" ng-model="Game.settings.winPointsPerTrick" class="custom-control-input"/>
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Award points per trick won</span>
-                    </label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="points-win-per-trick" ng-model="Game.settings.winPointsPerTrick" class="custom-control-input" />
+                        <label for="points-win-per-trick" class="custom-control-label">Award points per trick won</label>
+                    </div>
                 </div>
 
                 <div class="col">
-                    <label for="points-win-per-trick-successful" class="custom-control custom-checkbox">
-                        <input type="checkbox" id="points-win-per-trick-successful" ng-model="Game.settings.winPointsPerTrickIfSuccessful" class="custom-control-input"/>
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Only award points for successful trick</span>
-                    </label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="points-win-per-trick-successful" ng-model="Game.settings.winPointsPerTrickIfSuccessful" class="custom-control-input" />
+                        <label for="points-win-per-trick-successful" class="custom-control-label">Only award points for successful trick</label>
+                    </div>
                 </div>
             </div>
             <div class="form-row">
                 <div class="col">
-                <label for="points-win-per-trick-zero" class="custom-control custom-checkbox">
-                    <input type="checkbox" id="points-win-per-trick-zero" ng-model="Game.settings.winPointsPerTrickIfZero" class="custom-control-input"/>
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Award half a point for zero</span>
-                </label>   
-            </div>            
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="points-win-per-trick-zero" ng-model="Game.settings.winPointsPerTrickIfZero" class="custom-control-input" />
+                        <label for="points-win-per-trick-zero" class="custom-control-label">Award half a point for zero</label>
+                    </div>
+                </div>
                 <div class="col">
-                    <label for="points-lose-per-difference" class="custom-control custom-checkbox">
+                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" id="points-lose-per-difference" ng-model="Game.settings.losePointsPerDifference" class="custom-control-input" />
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Lose points per trick/bid difference</span>
-                    </label>
+                        <label for="points-lose-per-difference" class="custom-control-label">Lose points per trick/bid difference</label>
+                    </div>
                 </div>
             </div>
 
@@ -232,19 +225,17 @@
 
             <div class="form-row">
                 <div class="col">
-                    <label for="points-successful-bid-variable" class="custom-control custom-checkbox">
+                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" id="points-successful-bid-variable" ng-model="Game.settings.pointsSuccessfulVariable" class="custom-control-input" />
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Bonus points equal to no. of cards dealt</span>
-                    </label>
+                        <label for="points-successful-bid-variable" class="custom-control-label">Bonus points equal to no. of cards dealt</label>
+                    </div>
                 </div>
 
                 <div class="col">
-                    <label for="points-successful-bid-inverse" class="custom-control custom-checkbox">
+                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" id="points-successful-bid-inverse" ng-model="Game.settings.pointsSuccessfulInverse" class="custom-control-input" />
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Bonus points inverse to the no. of cards dealt</span>
-                    </label>
+                        <label for="points-successful-bid-inverse" class="custom-control-label">Bonus points inverse to the no. of cards dealt</label>
+                    </div>
                 </div>
             </div>
 
@@ -257,20 +248,17 @@
 
             <div class="form-row">
                 <div class="col">
-                    <label for="points-unsuccessful-bid-variable" class="custom-control custom-checkbox">
+                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" id="points-unsuccessful-bid-variable" ng-model="Game.settings.pointsUnsuccessfulVariable" class="custom-control-input" />
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Reduce bonus points equal to the no. of cards dealt</span>
-                    </label>
+                        <label for="points-unsuccessful-bid-variable" class="custom-control-label">Reduce bonus points equal to the no. of cards dealt</label>
+                    </div>
                 </div>
 
                 <div class="col">
-                    <label for="points-unsuccessful-bid-inverse" class="custom-control custom-checkbox">
-                        <input type="checkbox" id="points-unsuccessful-bid-inverse" ng-model="Game.settings.pointsUnsuccessfulInverse" class="custom-control-input"
-                        />
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description">Reduce bonus points inverse to the no. of cards dealt</span>
-                    </label>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" id="points-unsuccessful-bid-inverse" ng-model="Game.settings.pointsUnsuccessfulInverse" class="custom-control-input" />
+                        <label for="points-unsuccessful-bid-inverse" class="custom-control-label">Reduce bonus points inverse to the no. of cards dealt</label>
+                    </div>
                 </div>
             </div>
 
@@ -287,12 +275,10 @@
             </div>
 
             <div class="form-group">
-                <label for="blind-bid-double" class="custom-control custom-checkbox">
-                    <input type="checkbox" id="blind-bid-double" ng-model="Game.settings.blindBidDouble" class="custom-control-input"
-                    />
-                    <span class="custom-control-indicator"></span>
-                    <span class="custom-control-description">Double the points in a round by blind bidding</span>
-                </label>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" id="blind-bid-double" ng-model="Game.settings.blindBidDouble" class="custom-control-input" />
+                    <label for="blind-bid-double" class="custom-control-label">Double the points in a round by blind bidding</label>
+                </div>
             </div>
 
             <button class="btn btn-success" ng-click="Game.startGame()">Start game</button>
