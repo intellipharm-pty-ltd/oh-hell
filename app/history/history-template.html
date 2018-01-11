@@ -109,6 +109,7 @@
       <th>Player</th>
       <th>Games</th>
       <th>Wins</th>
+      <th>Win %</th>
       <th>Blind Bids</th>
     </tr>
   </thead>
@@ -117,6 +118,7 @@
       <td>{{ player }}</td>
       <td>{{ stat.games }}</td>
       <td>{{ stat.wins }}</td>
+      <td>{{(100*stat.wins/stat.games)| number:0}}%</td>
       <td>{{ stat.blindBids }}</td>
     </tr>
   </tbody>
