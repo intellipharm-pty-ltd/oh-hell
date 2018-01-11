@@ -30,15 +30,19 @@ export class HistoryController {
               games: 0,
               wins: 0,
               blindBids: 0,
+              points: 0,
             };
           }
 
           this.stats[player].games++;
+          this.stats[player].points += game.leaderboard.length - game.leaderboard.findIndex(x => x.player== player);
         });
 
         if (game.isFinished) {
           this.stats[game.leaderboard[0].player].wins++;
         }
+
+
 
         _.forEach(game.rounds, (round) => {
           _.forEach(round.players, (player, playerIndex) => {
@@ -53,6 +57,9 @@ export class HistoryController {
       this.loadCharts();
 
       this.$scope.$apply();
+      Sortable.init();
+      // hack to set default sorting
+      document.getElementById('default-sort').click();
     });
   }
 

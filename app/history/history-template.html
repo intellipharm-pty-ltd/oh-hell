@@ -103,11 +103,12 @@
 
 <h2>Player Statistics</h2>
 
-<table st-table="History.stats" class="table table-striped table-bordered">
+<table st-table="History.stats" class="table table-striped table-bordered sortable-theme-bootstrap" data-sortable>
   <thead>
     <tr>
       <th>Player</th>
       <th>Games</th>
+      <th data-sortable id="default-sort">Points</th>
       <th>Wins</th>
       <th>Win %</th>
       <th>Blind Bids</th>
@@ -117,6 +118,7 @@
     <tr ng-repeat="(player, stat) in History.stats">
       <td>{{ player }}</td>
       <td>{{ stat.games }}</td>
+      <td>{{ stat.points }}</td>
       <td>{{ stat.wins }}</td>
       <td>{{(100*stat.wins/stat.games)| number:0}}%</td>
       <td>{{ stat.blindBids }}</td>
