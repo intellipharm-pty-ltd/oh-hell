@@ -28,6 +28,7 @@ export class HistoryController {
           if (!this.stats.hasOwnProperty(player)) {
             this.stats[player] = {
               games: 0,
+              rounds: 0,
               wins: 0,
               blindBids: 0,
               points: 0,
@@ -35,6 +36,7 @@ export class HistoryController {
           }
 
           this.stats[player].games++;
+          this.stats[player].rounds += game.rounds.length;
           this.stats[player].points += game.leaderboard.length - game.leaderboard.findIndex(x => x.player== player);
         });
 
