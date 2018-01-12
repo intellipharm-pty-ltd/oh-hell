@@ -113,7 +113,9 @@
       <th>Wins</th>
       <th>Win %</th>
       <th>Blind Bids</th>
-      <th>Blind Bid %</th>
+      <th>BB %</th>
+      <th>BB Won</th>
+      <th>BB Won %</th>
     </tr>
   </thead>
   <tbody>
@@ -126,6 +128,8 @@
       <td>{{(100*stat.wins/stat.games)| number:0}}%</td>
       <td>{{ stat.blindBids }}</td>
       <td>{{(100*stat.blindBids/stat.rounds)| number:0}}%</td>
+      <td>{{ stat.blindBidsWon }}</td>
+      <td>{{(100*stat.blindBidsWon/stat.blindBids)| number:0}}%</td>
     </tr>
   </tbody>
 </table>
