@@ -10,6 +10,9 @@ export class HistoryController {
     this.chartService = new ChartService();
     this.storageService = new StorageService();
 
+    this.lowestScore = {player: "", points: 100, days: 0};
+    this.highestScore = {player: "", points: 0, days: 0};
+
     this.loadGames();
   }
 
@@ -61,6 +64,16 @@ export class HistoryController {
             }
           });
         });
+        if(game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points){
+            this.lowestScore.points = game.leaderboard[game.leaderboard.length - 1].points;
+            this.lowestScore.player = game.leaderboard[game.leaderboard.length - 1].player;
+            this.lowestScore.days = moment().diff(moment(game.endTime), 'd');
+        }
+        if(game.leaderboard[0].points > this.highestScore.points){
+            this.highestScore.points = game.leaderboard[0].points;
+            this.highestScore.player = game.leaderboard[0].player;
+            this.highestScore.days = moment().diff(moment(game.endTime), 'd');
+        }
       });
 
       // create the charts
