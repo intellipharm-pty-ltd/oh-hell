@@ -29,6 +29,7 @@ export class HistoryController {
             this.stats[player] = {
               games: 0,
               rounds: 0,
+              roundsWon: 0,
               wins: 0,
               blindBids: 0,
               blindBidsWon: 0,
@@ -54,6 +55,9 @@ export class HistoryController {
               if(player.bid === player.tricks){
                   this.stats[game.settings.players[playerIndex]].blindBidsWon++;
               }
+            }
+            if(player.bid === player.tricks){
+                this.stats[game.settings.players[playerIndex]].roundsWon++;
             }
           });
         });
