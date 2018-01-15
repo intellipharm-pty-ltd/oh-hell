@@ -39,7 +39,7 @@ export class HistoryController {
 
           this.stats[player].games++;
           this.stats[player].rounds += game.rounds.length;
-          this.stats[player].points += game.leaderboard.length - game.leaderboard.findIndex(x => x.player== player);
+          this.stats[player].points += game.isFinished ? game.leaderboard.length - game.leaderboard.findIndex(x => x.player== player) : 0;
         });
 
         if (game.isFinished) {
