@@ -21,15 +21,19 @@ export class HistoryController {
       // game stats
       this.games = _.map(games, (game) => {
         game.leaderboard = this.gameService.getLeaderboard(game);
+        game.bruceScoring = this.gameService.calculateBruceScoring(game);
         return game;
       });
 
       // individual player stats
-      this.stats = {};
+      this.stats = [];
       _.forEach(games, (game) => {
         _.forEach(game.settings.players, (player) => {
-          if (!this.stats.hasOwnProperty(player)) {
-            this.stats[player] = {
+          var statIndex = this.findPlayerStats(player);
+
+          if (statIndex === -1) {
+            this.stats.push({
+              player: player,
               games: 0,
               rounds: 0,
               roundsWon: 0,
@@ -37,30 +41,31 @@ export class HistoryController {
               blindBids: 0,
               blindBidsWon: 0,
               points: 0,
-            };
+              bruce: 0,
+            });
+            statIndex = this.stats.length - 1;
           }
 
-          this.stats[player].games++;
-          this.stats[player].rounds += game.rounds.length;
-          this.stats[player].points += game.isFinished ? game.leaderboard.length - game.leaderboard.findIndex(x => x.player== player) : 0;
+          this.stats[statIndex].games++;
+          this.stats[statIndex].rounds += game.rounds.length;
+          this.stats[statIndex].points += game.leaderboard[_.findIndex(game.leaderboard, {player: player})].points;
+          this.stats[statIndex].bruce += game.isFinished ? game.bruceScoring.find((x) => { return x.player === player; }).points : 0;
         });
 
         if (game.isFinished) {
-          this.stats[game.leaderboard[0].player].wins++;
+          this.stats[this.findPlayerStats(game.leaderboard[0].player)].wins++;
         }
-
-
 
         _.forEach(game.rounds, (round) => {
           _.forEach(round.players, (player, playerIndex) => {
             if (player.blind) {
-              this.stats[game.settings.players[playerIndex]].blindBids++;
+              this.stats[this.findPlayerStats(game.settings.players[playerIndex])].blindBids++;
               if(player.bid === player.tricks){
-                  this.stats[game.settings.players[playerIndex]].blindBidsWon++;
+                  this.stats[this.findPlayerStats(game.settings.players[playerIndex])].blindBidsWon++;
               }
             }
             if(player.bid === player.tricks){
-                this.stats[game.settings.players[playerIndex]].roundsWon++;
+                this.stats[this.findPlayerStats(game.settings.players[playerIndex])].roundsWon++;
             }
           });
         });
@@ -80,10 +85,11 @@ export class HistoryController {
       this.loadCharts();
 
       this.$scope.$apply();
-      Sortable.init();
-      // hack to set default sorting
-      document.getElementById('default-sort').click();
     });
+  }
+
+  findPlayerStats(player) {
+    return _.findIndex(this.stats, {player: player});
   }
 
   deleteGame(game) {

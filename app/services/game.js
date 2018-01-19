@@ -117,4 +117,41 @@ export class GameService {
   getHighestCardCount(game) {
     return Math.max(game.settings.cardsInFirstRound, game.settings.cardsInLastRound);
   }
+
+  calculateBruceScoring(game) {
+    var bruceScoring = [];
+
+    for (var i = 0; i < game.leaderboard.length; i++) {
+      var tieStart = null;
+      var tieEnd = null;
+
+      // if found a tie
+      while (i < game.leaderboard.length && game.leaderboard[i] === game.leaderboard[i + 1]) {
+        if (tieStart === null) {
+          tieStart = i;
+        }
+
+        tieEnd = i;
+      }
+
+      if (tieStart && tieEnd) {
+        var playersInTie = (tieEnd - tieStart);
+        var tiePoints = (game.leaderboard.length * playersInTie - ((tieStart + tieEnd) / 2 * playersInTie)) / playersInTie;
+        for (var j = tieStart; j <= tieEnd; j++) {
+          bruceScoring.push({
+            player: game.leaderboard[j].player,
+            points: tiePoints,
+          });
+        }
+        i = tieEnd;
+      } else {
+        bruceScoring.push({
+          player: game.leaderboard[i].player,
+          points: game.leaderboard.length - i,
+        });
+      }
+    }
+
+    return bruceScoring;
+  }
 }
