@@ -10,8 +10,8 @@ export class HistoryController {
     this.chartService = new ChartService();
     this.storageService = new StorageService();
 
-    this.lowestScore = {player: "", points: 100, days: 0};
-    this.highestScore = {player: "", points: 0, days: 0};
+    this.lowestScore = {player: "", points: 100, days: 0, numplayers: 0};
+    this.highestScore = {player: "", points: 0, days: 0, numplayers: 0};
 
     this.loadGames();
   }
@@ -41,6 +41,7 @@ export class HistoryController {
               blindBids: 0,
               blindBidsWon: 0,
               points: 0,
+              points_321: 0,
               bruce: 0,
             });
             statIndex = this.stats.length - 1;
@@ -49,6 +50,7 @@ export class HistoryController {
           this.stats[statIndex].games++;
           this.stats[statIndex].rounds += game.rounds.length;
           this.stats[statIndex].points += game.leaderboard[_.findIndex(game.leaderboard, {player: player})].points;
+          this.stats[statIndex].points_321 += _.findIndex(game.leaderboard, {player: player}) < 3 ? 3 - _.findIndex(game.leaderboard, {player: player}) : 0;
           this.stats[statIndex].bruce += game.isFinished ? game.bruceScoring.find((x) => { return x.player === player; }).points : 0;
         });
 
@@ -73,11 +75,13 @@ export class HistoryController {
             this.lowestScore.points = game.leaderboard[game.leaderboard.length - 1].points;
             this.lowestScore.player = game.leaderboard[game.leaderboard.length - 1].player;
             this.lowestScore.days = moment().diff(moment(game.endTime), 'd');
+            this.lowestScore.numplayers = game.settings.players.length;
         }
         if(game.leaderboard[0].points > this.highestScore.points){
             this.highestScore.points = game.leaderboard[0].points;
             this.highestScore.player = game.leaderboard[0].player;
             this.highestScore.days = moment().diff(moment(game.endTime), 'd');
+            this.highestScore.numplayers = game.settings.players.length;
         }
       });
 

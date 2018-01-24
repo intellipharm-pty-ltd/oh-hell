@@ -118,6 +118,9 @@
             <th>
                 Days held
             </th>
+            <th>
+                Number of players
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -134,6 +137,9 @@
             <td>
                 {{History.highestScore.days}}
             </td>
+            <td>
+                {{History.highestScore.numplayers}}
+            </td>
         </tr>
         <tr>
             <td>
@@ -148,6 +154,9 @@
             <td>
                 {{History.lowestScore.days}}
             </td>
+            <td>
+                {{History.lowestScore.numplayers}}
+            </td>
         </tr>
     </tbody>
 </table>
@@ -159,10 +168,11 @@
   <thead>
     <tr>
       <th st-sort="player">Player</th>
-      <th st-sort="bruce" st-sort-default="reverse">Bruce Scoring</th>
+      <th st-sort="bruce" st-sort-default="reverse" title="Points awarded based on number of players">Bruce Scoring</th>
+      <th st-sort="321" title="3 points for win, 2 for 2nd, 1 for 3rd">3-2-1 Scoring</th>
       <th st-sort="games">Games</th>
       <th st-sort="wins">Wins (%)</th>
-      <th st-sort="points">Points</th>
+      <th st-sort="points" title="Cumulative game points">Points</th>
       <th st-sort="rounds">Rounds</th>
       <th st-sort="roundsWon">Rounds Won (%)</th>
       <th st-sort="blindBids">Blind Bids (% of rounds)</th>
@@ -173,6 +183,7 @@
     <tr ng-repeat="stat in History.stats">
       <td>{{ stat.player }}</td>
       <td>{{ stat.bruce }}</td>
+      <td>{{ stat.points_321 }}</td>
       <td>{{ stat.games }}</td>
       <td>{{ stat.wins }} ({{(100*stat.wins/stat.games)| number:0}}%)</td>
       <td>{{ stat.points }}</td>
