@@ -50,7 +50,7 @@ export class HistoryController {
           this.stats[statIndex].games++;
           this.stats[statIndex].rounds += game.rounds.length;
           this.stats[statIndex].points += game.leaderboard[_.findIndex(game.leaderboard, {player: player})].points;
-          this.stats[statIndex].points_321 += _.findIndex(game.leaderboard, {player: player}) < 3 ? 3 - _.findIndex(game.leaderboard, {player: player}) : 0;
+          this.stats[statIndex].points_321 += game.isFinished && _.findIndex(game.leaderboard, {player: player}) < 3 ? 3 - _.findIndex(game.leaderboard, {player: player}) : 0;
           this.stats[statIndex].bruce += game.isFinished ? game.bruceScoring.find((x) => { return x.player === player; }).points : 0;
         });
 
@@ -66,18 +66,18 @@ export class HistoryController {
                   this.stats[this.findPlayerStats(game.settings.players[playerIndex])].blindBidsWon++;
               }
             }
-            if(player.bid === player.tricks){
+            if(player.bid === player.tricks && player.bid){
                 this.stats[this.findPlayerStats(game.settings.players[playerIndex])].roundsWon++;
             }
           });
         });
-        if(game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points){
+        if(game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points && game.isFinished){
             this.lowestScore.points = game.leaderboard[game.leaderboard.length - 1].points;
             this.lowestScore.player = game.leaderboard[game.leaderboard.length - 1].player;
             this.lowestScore.days = moment().diff(moment(game.endTime), 'd');
             this.lowestScore.numplayers = game.settings.players.length;
         }
-        if(game.leaderboard[0].points > this.highestScore.points){
+        if(game.leaderboard[0].points > this.highestScore.points && game.isFinished){
             this.highestScore.points = game.leaderboard[0].points;
             this.highestScore.player = game.leaderboard[0].player;
             this.highestScore.days = moment().diff(moment(game.endTime), 'd');
