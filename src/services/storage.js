@@ -1,3 +1,6 @@
+import localforage from 'localforage';
+import moment from 'moment';
+
 export class StorageService {
   constructor() {
     this.keys = {

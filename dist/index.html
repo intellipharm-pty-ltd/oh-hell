@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+      <title>Oh Hell!</title>
+
+      <script src="bundle.js" type="module"></script>
+  </head>
+
+  <body ng-controller="AppController as App" ng-class="{'dark': App.darkTheme}">
+      <div class="topNav">
+          <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+              <a class="navbar-brand" href="#">Bloody Hell!</a>
+              <form class="form-inline ml-auto">
+                  <a class="btn btn-primary btn-sm" href="#!/history">Game History</a>
+                  <button class="btn btn-primary btn-sm" ng-click="App.toggleScoreView()" ng-disabled="App.game.isFinished">Toggle Score View</button>
+                  <button class="btn btn-primary btn-sm" ng-click="App.toggleTheme()">Toggle Theme</button>
+                  <a class="btn btn-primary btn-sm" href="#!/game/0">Create New Game</a>
+              </form>
+          </nav>
+      </div>
+      <div class="container-fluid">
+          <div ng-view></div>
+      </div>
+  </body>
+</html>

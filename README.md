@@ -2,9 +2,35 @@
 Scoring website for the card game Oh Hell! Also known as Oh Pshaw, Up the River, Up and down the River, Bumble, Vanishing Whist, Diminishing Whist, Hell Yeah!, Peanuts, Stinky Fingers, Get Fred, Gary's Game, Diminishing Bridge, Shit On Your Neighbor, O'Shay, Juego de Daniel, Nah Pearse, German Bridge 
 
 ### Instructions
-To play on the hosted version go to https://intellipharm.github.io/oh-hell/index.html.
+#### Production
+To play on the hosted version go to https://intellipharm.github.io/oh-hell/dist/.
 
-Otherwise follow these simple steps: Download files, open `index.html`, configure the settings, and play!
+Alternatively to build it yourself, run the commands below:
+
+```
+$ npm install
+$ npm build
+```
+
+Or if you're using yarn:
+
+```
+% yarn install
+$ yarn build
+```
+
+#### Development
+You can run webpack-dev-server using the script below:
+
+```
+$ npm start
+```
+
+Or
+
+```
+$ yarn start
+```
 
 ### Features
  * A plethora of settings including various scoring methods
