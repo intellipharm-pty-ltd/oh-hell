@@ -1,3 +1,5 @@
+import Chart from 'chart.js';
+
 export class ChartService {
   constructor() {
     this.BID_ACCURACY = {

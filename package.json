@@ -24,5 +24,31 @@
   "bugs": {
     "url": "https://github.com/Intellipharm/oh-hell/issues"
   },
-  "homepage": "https://github.com/Intellipharm/oh-hell#readme"
+  "homepage": "https://github.com/Intellipharm/oh-hell#readme",
+  "dependencies": {
+    "angular": "1.6.7",
+    "angular-route": "^1.6.8",
+    "angular-smart-table": "2.1.11",
+    "babel-core": "^6.26.0",
+    "bootstrap": "^4.0.0",
+    "chart.js": "2.7.1",
+    "localforage": "1.5.5",
+    "lodash": "4.17.4",
+    "moment": "2.20.1"
+  },
+  "scripts": {
+    "build": "webpack",
+    "start": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.9",
+    "file-loader": "^1.1.6",
+    "html-loader": "^0.5.5",
+    "style-loader": "^0.20.1",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  }
 }
