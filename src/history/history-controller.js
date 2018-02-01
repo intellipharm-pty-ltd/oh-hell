@@ -13,8 +13,11 @@ export class HistoryController {
     this.chartService = new ChartService();
     this.storageService = new StorageService();
 
-    this.lowestScore = {player: "", points: 100, days: 0, numplayers: 0};
-    this.highestScore = {player: "", points: 0, days: 0, numplayers: 0};
+    this.lowestScore = {player: [], points: 100, days: [], numplayers: []};
+    this.highestScore = {player: [], points: 0, days: [], numplayers: []};
+    this.loseStreak = {player: [], points: 0, days: 0, numplayers: '-'};
+    this.tmpwinStreak = {player: "", points: 0, days: 0, numplayers: '-'};
+    this.winStreak = {player: [], points: 0, days: 0, numplayers: '-'};
 
     this.loadGames();
   }
@@ -30,8 +33,9 @@ export class HistoryController {
 
       // individual player stats
       this.stats = [];
-      _.forEach(games, (game) => {
-        _.forEach(game.settings.players, (player) => {
+      _.forEach(games, (game, gameIndex) => {
+          var blnGameDone = false;
+        _.forEach(game.settings.players, (player, playerIndex) => {
           var statIndex = this.findPlayerStats(player);
 
           if (statIndex === -1) {
@@ -46,6 +50,8 @@ export class HistoryController {
               points: 0,
               points_321: 0,
               bruce: 0,
+              daysSinceWin: 0,
+              loseStreak: 0,
             });
             statIndex = this.stats.length - 1;
           }
@@ -55,10 +61,42 @@ export class HistoryController {
           this.stats[statIndex].points += game.leaderboard[_.findIndex(game.leaderboard, {player: player})].points;
           this.stats[statIndex].points_321 += game.isFinished && _.findIndex(game.leaderboard, {player: player}) < 3 ? 3 - _.findIndex(game.leaderboard, {player: player}) : 0;
           this.stats[statIndex].bruce += game.isFinished ? game.bruceScoring.find((x) => { return x.player === player; }).points : 0;
+          if(game.leaderboard[0].player == game.settings.players[playerIndex]){
+              this.stats[this.findPlayerStats(game.settings.players[playerIndex])].daysSinceWin = 0;
+          }else{
+              this.stats[this.findPlayerStats(game.settings.players[playerIndex])].daysSinceWin++;
+              if(this.stats[this.findPlayerStats(game.settings.players[playerIndex])].daysSinceWin >= this.loseStreak.points){
+                  this.stats[this.findPlayerStats(game.settings.players[playerIndex])].daysSinceWin > this.loseStreak.points ? this.loseStreak.player = [] : null;
+                  this.loseStreak.points = this.stats[this.findPlayerStats(game.settings.players[playerIndex])].daysSinceWin;
+                  this.loseStreak.player.push(this.stats[this.findPlayerStats(game.settings.players[playerIndex])].player);
+                  this.loseStreak.days = 0;
+              }else{
+                  if(!blnGameDone){
+                      this.loseStreak.days++
+                      blnGameDone = true;
+                  }
+              }
+          }
         });
 
         if (game.isFinished) {
           this.stats[this.findPlayerStats(game.leaderboard[0].player)].wins++;
+          // calcuate winning streak
+          if(game.leaderboard[0].player == this.tmpwinStreak.player){
+              this.tmpwinStreak.points++
+              this.winStreak.days++
+              if(this.tmpwinStreak.points >= this.winStreak.points){
+                  // this.winStreak = Object.assign({},this.tmpwinStreak);
+                  this.tmpwinStreak.points > this.winStreak.points ? this.winStreak.player = [] : null;
+                  this.winStreak.player.push(this.tmpwinStreak.player);
+                  this.winStreak.points = this.tmpwinStreak.points;
+                  this.winStreak.days = 0;
+              }
+          }else {
+              this.winStreak.days++
+              this.tmpwinStreak.player = game.leaderboard[0].player;
+              this.tmpwinStreak.points = 1;
+          }
         }
 
         _.forEach(game.rounds, (round) => {
@@ -74,17 +112,23 @@ export class HistoryController {
             }
           });
         });
-        if(game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points && game.isFinished){
+        if(game.leaderboard[game.leaderboard.length - 1].points <= this.lowestScore.points && game.isFinished){
+            game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points ? this.lowestScore.player = [] : null;
+            game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points ? this.lowestScore.days = [] : null;
+            game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points ? this.lowestScore.numplayers = [] : null;
             this.lowestScore.points = game.leaderboard[game.leaderboard.length - 1].points;
-            this.lowestScore.player = game.leaderboard[game.leaderboard.length - 1].player;
-            this.lowestScore.days = moment().diff(moment(game.endTime), 'd');
-            this.lowestScore.numplayers = game.settings.players.length;
+            this.lowestScore.player.push(game.leaderboard[game.leaderboard.length - 1].player);
+            this.lowestScore.days.push(moment().diff(moment(game.endTime), 'd'));
+            this.lowestScore.numplayers.push(game.settings.players.length);
         }
         if(game.leaderboard[0].points > this.highestScore.points && game.isFinished){
+            game.leaderboard[game.leaderboard.length - 1].points < this.highestScore.points ? this.highestScore.player = [] : null;
+            game.leaderboard[game.leaderboard.length - 1].points < this.highestScore.points ? this.highestScore.days = [] : null;
+            game.leaderboard[game.leaderboard.length - 1].points < this.highestScore.points ? this.highestScore.numplayers = [] : null;
             this.highestScore.points = game.leaderboard[0].points;
-            this.highestScore.player = game.leaderboard[0].player;
-            this.highestScore.days = moment().diff(moment(game.endTime), 'd');
-            this.highestScore.numplayers = game.settings.players.length;
+            this.highestScore.player.push(game.leaderboard[0].player);
+            this.highestScore.days.push(moment().diff(moment(game.endTime), 'd'));
+            this.highestScore.numplayers.push(game.settings.players.length);
         }
       });
 
