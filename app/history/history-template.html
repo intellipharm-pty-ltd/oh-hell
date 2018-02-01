@@ -106,57 +106,41 @@
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>
-                Record
-            </th>
-            <th>
-                Player
-            </th>
-            <th>
-                Score
-            </th>
-            <th>
-                Days held
-            </th>
-            <th>
-                Number of players
-            </th>
+            <th>Record</th>
+            <th>Player</th>
+            <th>Score</th>
+            <th>Days held</th>
+            <th>Number of players</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>
-                Highest score
-            </td>
-            <td>
-                {{History.highestScore.player}}
-            </td>
-            <td>
-                {{History.highestScore.points}}
-            </td>
-            <td>
-                {{History.highestScore.days}}
-            </td>
-            <td>
-                {{History.highestScore.numplayers}}
-            </td>
+            <td>Highest score</td>
+            <td>{{History.highestScore.player.join(", ")}}</td>
+            <td>{{History.highestScore.points}}</td>
+            <td>{{History.highestScore.days.join(", ")}}</td>
+            <td>{{History.highestScore.numplayers.join(", ")}}</td>
         </tr>
         <tr>
-            <td>
-                Lowest score
-            </td>
-            <td>
-                {{History.lowestScore.player}}
-            </td>
-            <td>
-                {{History.lowestScore.points}}
-            </td>
-            <td>
-                {{History.lowestScore.days}}
-            </td>
-            <td>
-                {{History.lowestScore.numplayers}}
-            </td>
+            <td>Lowest score</td>
+            <td>{{History.lowestScore.player.join(", ")}}</td>
+            <td>{{History.lowestScore.points}}</td>
+            <td>{{History.lowestScore.days.join(", ")}}</td>
+            <td>{{History.lowestScore.numplayers.join(", ")}}</td>
+        </tr>
+        <tr>
+            <td>Longest winning streak</td>
+            <td>{{History.winStreak.player.join(", ")}}</td>
+            <td>{{History.winStreak.points}} days</td>
+            <td>{{History.winStreak.days}}</td>
+            <td>{{History.winStreak.numplayers}}</td>
+        </tr>
+        <tr>
+            <td>Longest losing streak</td>
+            <td>{{History.loseStreak.player.join(", ")}}</td>
+            <td>{{History.loseStreak.points}} days</td>
+            <td>{{History.loseStreak.days}}</td>
+            <td>{{History.loseStreak.numplayers}}</td>
         </tr>
     </tbody>
 </table>
@@ -177,6 +161,7 @@
       <th st-sort="roundsWon">Rounds Won (%)</th>
       <th st-sort="blindBids">Blind Bids (% of rounds)</th>
       <th st-sort="blindBidsWon">BB Won (%)</th>
+      <th st-sort="blindBidsWon">Games since last win</th>
     </tr>
   </thead>
   <tbody>
@@ -191,6 +176,7 @@
       <td>{{ stat.roundsWon }} ({{(100*stat.roundsWon/stat.rounds)| number:0}}%)</td>
       <td>{{ stat.blindBids }} ({{(100*stat.blindBids/stat.rounds)| number:0}}%)</td>
       <td>{{ stat.blindBidsWon }} ({{(100*stat.blindBidsWon/stat.blindBids)| number:0}}%)</td>
+      <td>{{ stat.daysSinceWin }}</td>
     </tr>
   </tbody>
 </table>
