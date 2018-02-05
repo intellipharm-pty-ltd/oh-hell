@@ -115,6 +115,7 @@ export class GameController {
       cardCount: cardCount,
       dealer: dealer,
       players: [],
+      order: [],
     };
 
     for (var j = 0; j < this.settings.players.length; j++) {
@@ -124,7 +125,93 @@ export class GameController {
       });
     }
 
+    for (var k = dealer + 1; round.order.length < this.settings.players.length; k++) {
+      if (k >= this.settings.players.length) {
+        k = 0;
+      }
+
+      round.order.push(k);
+    }
+
     return round;
+  }
+
+  canStartRound() {
+    var allPlayersHaveBid = true;
+
+    // check to make sure all players have bid
+    this.game.rounds[this.game.currentRound.index].players.forEach((player) => {
+      if (player.bid === null) {
+        allPlayersHaveBid = false;
+      }
+    });
+
+    if (!allPlayersHaveBid) {
+      return allPlayersHaveBid;
+    }
+
+    // check to make sure the dealer has not bid incorrectly
+    var bid = this.calculateDealerBidRestriction(this.game.currentRound.index);
+    var dealer = this.game.rounds[this.game.currentRound.index].dealer;
+
+    if (this.game.rounds[this.game.currentRound.index].players[dealer].bid === bid) {
+      return false;
+    }
+
+    return true;
+  }
+
+  canProgressToNextRound() {
+    var allPlayersHaveScored = true;
+
+    // check to make sure all players have scored
+    this.game.rounds[this.game.currentRound.index].players.forEach((player) => {
+      if (player.tricks === null) {
+        allPlayersHaveScored = false;
+      }
+    });
+
+    return allPlayersHaveScored;
+  }
+
+  bidIsDisabled(orderIndex, playerIndex) {
+    // if this is the first player in the round then allow the bid
+    if (orderIndex === 0) {
+      return false;
+    }
+
+    var round = this.game.rounds[this.game.currentRound.index];
+
+    for (var i = 0; i < round.order.length && i < orderIndex; i++) {
+      // if any player before this player hasn't bid yet then disable the bid
+      if (round.players[round.order[i]].bid === null) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  hasDealerBidIllegally(playerIndex) {
+    var round = this.game.rounds[this.game.currentRound.index];
+
+    if (playerIndex !== round.dealer) {
+      return false;
+    }
+
+    var bid = this.calculateDealerBidRestriction(this.game.currentRound.index);
+
+    if (bid < 0) {
+      return false;
+    } else {
+      var bid = this.calculateDealerBidRestriction(this.game.currentRound.index);
+
+      if (this.game.rounds[this.game.currentRound.index].players[playerIndex].bid === bid) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   getSettings() {
@@ -296,13 +383,17 @@ export class GameController {
   }
 
   calculateBidderRestriction(roundIndex) {
-    var bid = this.game.rounds[roundIndex].cardCount - this.calculateTotalBids(roundIndex, this.game.rounds[roundIndex].dealer);
+    var bid = this.calculateDealerBidRestriction(roundIndex);
 
     if (bid < 0) {
       return 'Can bid anything';
     } else {
       return 'Cannot bid ' + bid;
     }
+  }
+
+  calculateDealerBidRestriction(roundIndex) {
+    return this.game.rounds[roundIndex].cardCount - this.calculateTotalBids(roundIndex, this.game.rounds[roundIndex].dealer);
   }
 
   calculateTotalBids(roundIndex, excludeDealer) {

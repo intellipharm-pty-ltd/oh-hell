@@ -11,81 +11,118 @@
                 <div class="col-md text-center tie-break" ng-show="Game.game.isLeaderTied">
                     Tie Break Round!
                 </div>
-                <div class="col-md text-center current-round" ng-show="!App.showFullScore">
+
+                <!-- full score table view -->
+                <div ng-show="App.showFullScore">
+                    <div class="row players-wrapper text-center">
+                        <div class="col-md">Round</div>
+                        <div class="col-md player" ng-repeat="(playerIndex, player) in Game.game.settings.players">
+                            <div class="text-ellipsis">{{player}}</div>
+                            <div class="text-small">Points: {{Game.gameService.calculateTotalPoints(Game.game, playerIndex)}}</div>
+                        </div>
+                    </div>
+                    <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in Game.game.rounds">
+                        <div class="col-md">{{round.cardCount}}{{round.card.suit}} - {{Game.game.settings.players[round.dealer]}}</div>
+                        <div class="col-md score" ng-repeat="(playerIndex, player) in Game.game.settings.players">
+                            <input type="checkbox" ng-model="Game.game.rounds[roundIndex].players[playerIndex].blind" ng-show="Game.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
+                            <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="Game.game.rounds[roundIndex].players[playerIndex].bid" />
+                            <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="Game.game.rounds[roundIndex].players[playerIndex].tricks" /> {{Game.game.rounds[roundIndex].players[playerIndex].points}}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- individual round view -->
+                <div ng-show="!App.showFullScore">
+                    <div class="col-md text-center current-round">
+                        <div class="row">
+                            <div class="col-md">
+                                <h3>Dealer</h3>
+                                <p>{{Game.game.settings.players[Game.game.rounds[Game.game.currentRound.index].dealer]}}</p>
+                                <p>{{Game.calculateBidderRestriction(Game.game.currentRound.index)}}</p>
+                            </div>
+                            <div class="col-md">
+                                <h3>Cards</h3>
+                                <p class="largest-text">
+                                    {{Game.game.rounds[Game.game.currentRound.index].cardCount}}
+                                    <suit suit="Game.game.rounds[Game.game.currentRound.index].card.suit"></suit>
+                                </p>
+                            </div>
+                            <div class="col-md d-none d-lg-block">
+                                <h3>Bids</h3>
+                                <p>
+                                    There are
+                                    <span ng-class="{
+                                'underbid': Game.calculateTotalBids(Game.game.currentRound.index) < Game.game.rounds[Game.game.currentRound.index].cardCount,
+                                'accurate-bid': Game.calculateTotalBids(Game.game.currentRound.index) === Game.game.rounds[Game.game.currentRound.index].cardCount,
+                                'overbid': Game.calculateTotalBids(Game.game.currentRound.index) > Game.game.rounds[Game.game.currentRound.index].cardCount,
+                            }">{{Game.calculateTotalBids(Game.game.currentRound.index)}} </span> bids from <b>{{Game.game.rounds[Game.game.currentRound.index].cardCount}}</b> possible wins
+                                </p>
+                                <p>{{Game.calculateBlindBidsDescription(Game.game.currentRound.index)}}</p>
+                            </div>
+                            <div class="col-md" ng-if="Game.game.settings.allowSuperTrump">
+                                <h3>Super Trump</h3>
+                                <p ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit === 'N'">
+                                    N/A for No Trumps
+                                </p>
+                                <card ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit !== 'N'" suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="Game.game.rounds[Game.game.currentRound.index].card.name" size="small"></card>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row players-wrapper text-center">
+                        <div class="col-md player" ng-repeat="playerIndex in Game.game.rounds[Game.game.currentRound.index].order">
+                            <div class="text-ellipsis">{{Game.game.settings.players[playerIndex]}}</div>
+                            <div class="text-small">Points: {{Game.gameService.calculateTotalPoints(Game.game, playerIndex)}}</div>
+
+                            <div class="round-wrapper">
+                                <div class="col-md" ng-if="!Game.game.currentRound.started">
+                                    <label>
+                                        Bid
+                                        <input
+                                            type="number"
+                                            ng-attr-name="Player{{playerIndex}}Bid"
+                                            class="form-control"
+                                            ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].bid"
+                                            ng-minlength="0"
+                                            ng-maxlength="Game.game.rounds[Game.game.currentRound.index].cardCount"
+                                            ng-disabled="Game.bidIsDisabled($index, playerIndex)"
+                                            focus-if="$index === 0"
+                                        />
+                                    </label>
+
+                                    <div style="font-size:12px;" class="alert alert-danger" ng-show="Game.hasDealerBidIllegally(playerIndex)">Dealer cannot make this bid</div>
+
+                                    <label ng-show="Game.eligibleForBlindBid(playerIndex, Game.game.currentRound.index)">
+                                        Blind Bid
+                                        <input type="checkbox" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].blind" />
+                                    </label>
+                                </div>
+
+                                <div class="col-md" ng-if="Game.game.currentRound.started">
+                                    <label>
+                                        Tricks {{Game.game.rounds[Game.game.currentRound.index].players[playerIndex].bid}} /
+                                        <input type="number" min="0" max="10" class="form-control" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].tricks" focus-if="$index === 0" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md">
-                            <h3>Dealer</h3>
-                            <p>{{Game.game.settings.players[Game.game.rounds[Game.game.currentRound.index].dealer]}}</p>
-                            <p>{{Game.calculateBidderRestriction(Game.game.currentRound.index)}}</p>
+                            <button
+                                class="btn btn-primary"
+                                ng-click="Game.startRound()"
+                                ng-show="!Game.game.currentRound.started"
+                                ng-disabled="!Game.canStartRound()"
+                            >Start Round</button>
+                            <button
+                                class="btn btn-primary"
+                                ng-click="Game.nextRound()"
+                                ng-show="Game.game.currentRound.started"
+                                ng-disabled="!Game.canProgressToNextRound()"
+                            >Next Round</button>
                         </div>
-                        <div class="col-md">
-                            <h3>Cards</h3>
-                            <p class="largest-text">
-                                {{Game.game.rounds[Game.game.currentRound.index].cardCount}}
-                                <suit suit="Game.game.rounds[Game.game.currentRound.index].card.suit"></suit>
-                            </p>
-                        </div>
-                        <div class="col-md d-none d-lg-block">
-                            <h3>Bids</h3>
-                            <p>
-                                There are
-                                <span ng-class="{
-                            'underbid': Game.calculateTotalBids(Game.game.currentRound.index) < Game.game.rounds[Game.game.currentRound.index].cardCount,
-                            'accurate-bid': Game.calculateTotalBids(Game.game.currentRound.index) === Game.game.rounds[Game.game.currentRound.index].cardCount,
-                            'overbid': Game.calculateTotalBids(Game.game.currentRound.index) > Game.game.rounds[Game.game.currentRound.index].cardCount,
-                          }">{{Game.calculateTotalBids(Game.game.currentRound.index)}} </span> bids from <b>{{Game.game.rounds[Game.game.currentRound.index].cardCount}}</b> possible wins
-                            </p>
-                            <p>{{Game.calculateBlindBidsDescription(Game.game.currentRound.index)}}</p>
-                        </div>
-                        <div class="col-md" ng-if="Game.game.settings.allowSuperTrump">
-                            <h3>Super Trump</h3>
-                            <p ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit === 'N'">
-                                N/A for No Trumps
-                            </p>
-                            <card ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit !== 'N'" suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="Game.game.rounds[Game.game.currentRound.index].card.name" size="small"></card>
-                        </div>
-                    </div>
-                </div>
-                <div class="row players-wrapper text-center">
-                    <div class="col-md" ng-show="App.showFullScore">Round</div>
-                    <div class="col-md player" ng-repeat="(playerIndex, player) in Game.game.settings.players">
-                        <div class="text-ellipsis">{{player}}</div>
-                        <div class="text-small">Points: {{Game.gameService.calculateTotalPoints(Game.game, playerIndex)}}</div>
-
-                        <div class="round-wrapper" ng-show="!App.showFullScore">
-                            <div class="col-md" ng-if="!Game.game.currentRound.started">
-                                <label>
-                                    Bid
-                                    <input type="number" min="0" max="10" class="form-control" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].bid" focus-if="playerIndex === 0" />
-                                </label>
-                                <label ng-show="Game.eligibleForBlindBid(playerIndex, Game.game.currentRound.index)">
-                                    Blind Bid
-                                    <input type="checkbox" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].blind" />
-                                </label>
-                            </div>
-
-                            <div class="col-md" ng-if="Game.game.currentRound.started">
-                                <label>
-                                    Tricks {{Game.game.rounds[Game.game.currentRound.index].players[playerIndex].bid}} /
-                                    <input type="number" min="0" max="10" class="form-control" ng-model="Game.game.rounds[Game.game.currentRound.index].players[playerIndex].tricks" focus-if="playerIndex === 0" />
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row scores-wrapper" ng-repeat="(roundIndex, round) in Game.game.rounds" ng-show="App.showFullScore">
-                    <div class="col-md">{{round.cardCount}}{{round.card.suit}} - {{Game.game.settings.players[round.dealer]}}</div>
-                    <div class="col-md score" ng-repeat="(playerIndex, player) in Game.game.settings.players">
-                        <input type="checkbox" ng-model="Game.game.rounds[roundIndex].players[playerIndex].blind" ng-show="Game.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
-                        <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="Game.game.rounds[roundIndex].players[playerIndex].bid" />
-                        <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="Game.game.rounds[roundIndex].players[playerIndex].tricks" /> {{Game.game.rounds[roundIndex].players[playerIndex].points}}
-                    </div>
-                </div>
-
-                <div class="row" ng-show="!App.showFullScore">
-                    <div class="col-md">
-                        <button class="btn btn-primary" ng-click="Game.startRound()" ng-show="!Game.game.currentRound.started">Start Round</button>
-                        <button class="btn btn-primary" ng-click="Game.nextRound()" ng-show="Game.game.currentRound.started">Next Round</button>
                     </div>
                 </div>
             </div>
