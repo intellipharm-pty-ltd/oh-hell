@@ -162,17 +162,42 @@
 </table>
 
 <br><br><br>
+<h2>Player Ratings</h2>
+
+<table ng-if="History.ratings" st-table="History.ratings" class="table table-striped table-bordered sortable-theme-bootstrap">
+  <thead>
+    <tr>
+      <th st-sort="player">Player</th>
+      <th st-sort="bruce" title="Points awarded based on number of players">Bruce Scoring</th>
+      <th st-sort="bruceAverage" st-sort-default="reverse">Bruce Scoring Average</th>
+      <th st-sort="scoring321" title="3 points for win, 2 for 2nd, 1 for 3rd">3-2-1 Scoring</th>
+      <th st-sort="scoring321Average">3-2-1 Scoring Average</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="stat in History.ratings">
+      <td>{{ stat.player }}</td>
+      <td>{{ stat.bruce | number : 0 }}</td>
+      <td>{{ stat.bruceAverage | number : 2 }}</td>
+      <td>{{ stat.scoring321 | number : 0 }}</td>
+      <td>{{ stat.scoring321Average | number : 2 }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<br><br><br>
 <h2>Player Statistics</h2>
 
 <table ng-if="History.stats" st-table="History.stats" class="table table-striped table-bordered sortable-theme-bootstrap">
   <thead>
     <tr>
       <th st-sort="player">Player</th>
-      <th st-sort="bruce" st-sort-default="reverse" title="Points awarded based on number of players">Bruce Scoring</th>
-      <th st-sort="321" title="3 points for win, 2 for 2nd, 1 for 3rd">3-2-1 Scoring</th>
       <th st-sort="games">Games</th>
-      <th st-sort="wins">Wins (%)</th>
-      <th st-sort="points" title="Cumulative game points">Points</th>
+      <th st-sort="winPercentage" st-sort-default="reverse">Wins (%)</th>
+      <th st-sort="points">Points</th>
+      <th st-sort="averagePoints">Average Points</th>
+      <th st-sort="maxPoints">Max Points</th>
+      <th st-sort="minPoints">Min Points</th>
       <th st-sort="rounds">Rounds</th>
       <th st-sort="roundsWon">Rounds Won (%)</th>
       <th st-sort="blindBids">Blind Bids (% of rounds)</th>
@@ -182,15 +207,16 @@
   <tbody>
     <tr ng-repeat="stat in History.stats">
       <td>{{ stat.player }}</td>
-      <td>{{ stat.bruce }}</td>
-      <td>{{ stat.points_321 }}</td>
-      <td>{{ stat.games }}</td>
-      <td>{{ stat.wins }} ({{(100*stat.wins/stat.games)| number:0}}%)</td>
-      <td>{{ stat.points }}</td>
-      <td>{{ stat.rounds }}</td>
-      <td>{{ stat.roundsWon }} ({{(100*stat.roundsWon/stat.rounds)| number:0}}%)</td>
-      <td>{{ stat.blindBids }} ({{(100*stat.blindBids/stat.rounds)| number:0}}%)</td>
-      <td>{{ stat.blindBidsWon }} ({{(100*stat.blindBidsWon/stat.blindBids)| number:0}}%)</td>
+      <td>{{ stat.games | number : 0 }}</td>
+      <td>{{ stat.wins | number : 0 }} ({{ stat.winPercentage | number : 0 }}%)</td>
+      <td>{{ stat.points | number : 0 }}</td>
+      <td>{{ stat.averagePoints | number : 0 }}</td>
+      <td>{{ stat.maxPoints | number : 0 }}</td>
+      <td>{{ stat.minPoints | number : 0 }}</td>
+      <td>{{ stat.rounds | number : 0 }}</td>
+      <td>{{ stat.roundsWon | number : 0 }} ({{ stat.roundsWonPercentage | number : 0 }}%)</td>
+      <td>{{ stat.blindBids | number : 0 }} ({{ stat.blindBidsPercentage | number : 0 }}%)</td>
+      <td>{{ stat.blindBidsWon | number : 0 }} ({{ stat.blindBidsWonPercentage | number : 0 }}%)</td>
     </tr>
   </tbody>
 </table>

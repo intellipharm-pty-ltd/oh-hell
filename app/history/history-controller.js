@@ -3,8 +3,9 @@ import { ChartService } from '../services/chart.js';
 import { StorageService } from '../services/storage.js';
 
 export class HistoryController {
-  constructor($scope) {
+  constructor($scope, $timeout) {
     this.$scope = $scope;
+    this.$timeout = $timeout;
 
     this.gameService = new GameService();
     this.chartService = new ChartService();
@@ -27,9 +28,11 @@ export class HistoryController {
 
       // individual player stats
       this.stats = [];
+      this.ratings = [];
       _.forEach(games, (game) => {
         _.forEach(game.settings.players, (player) => {
           var statIndex = this.findPlayerStats(player);
+          var leaderboardIndex = _.findIndex(game.leaderboard, {player: player});
 
           if (statIndex === -1) {
             this.stats.push({
@@ -41,17 +44,30 @@ export class HistoryController {
               blindBids: 0,
               blindBidsWon: 0,
               points: 0,
-              points_321: 0,
+            });
+            this.ratings.push({
+              player: player,
+              games: 0,
+              scoring321: 0,
               bruce: 0,
             });
             statIndex = this.stats.length - 1;
           }
 
           this.stats[statIndex].games++;
+          this.ratings[statIndex].games++;
           this.stats[statIndex].rounds += game.rounds.length;
-          this.stats[statIndex].points += game.leaderboard[_.findIndex(game.leaderboard, {player: player})].points;
-          this.stats[statIndex].points_321 += _.findIndex(game.leaderboard, {player: player}) < 3 ? 3 - _.findIndex(game.leaderboard, {player: player}) : 0;
-          this.stats[statIndex].bruce += game.isFinished ? game.bruceScoring.find((x) => { return x.player === player; }).points : 0;
+          this.stats[statIndex].points += game.leaderboard[leaderboardIndex].points;
+          this.ratings[statIndex].scoring321 += leaderboardIndex < 3 ? 3 - leaderboardIndex : 0;
+          this.ratings[statIndex].bruce += game.isFinished ? game.bruceScoring.find((x) => { return x.player === player; }).points : 0;
+
+          if (!this.stats[statIndex].hasOwnProperty('maxPoints') || game.leaderboard[leaderboardIndex].points > this.stats[statIndex].maxPoints) {
+            this.stats[statIndex].maxPoints = game.leaderboard[leaderboardIndex].points;
+          }
+
+          if (!this.stats[statIndex].hasOwnProperty('minPoints') || game.leaderboard[leaderboardIndex].points < this.stats[statIndex].minPoints) {
+            this.stats[statIndex].minPoints = game.leaderboard[leaderboardIndex].points;
+          }
         });
 
         if (game.isFinished) {
@@ -62,22 +78,39 @@ export class HistoryController {
           _.forEach(round.players, (player, playerIndex) => {
             if (player.blind) {
               this.stats[this.findPlayerStats(game.settings.players[playerIndex])].blindBids++;
-              if(player.bid === player.tricks){
+              if(player.bid === player.tricks) {
                   this.stats[this.findPlayerStats(game.settings.players[playerIndex])].blindBidsWon++;
               }
             }
-            if(player.bid === player.tricks){
+            if(player.bid === player.tricks) {
                 this.stats[this.findPlayerStats(game.settings.players[playerIndex])].roundsWon++;
             }
           });
         });
-        if(game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points){
+
+        // calculate averages
+        this.stats.forEach((stat) => {
+          stat.averagePoints = stat.points / stat.games;
+          stat.winPercentage = stat.wins / stat.games * 100;
+          stat.roundsWonPercentage = stat.roundsWon / stat.rounds * 100;
+          stat.blindBidsPercentage = stat.blindBids / stat.rounds * 100;
+          stat.blindBidsWonPercentage = stat.blindBidsWon / stat.blindBids * 100;
+        });
+
+        this.ratings.forEach((rating) => {
+          rating.bruceAverage = rating.bruce / rating.games;
+          rating.scoring321Average = rating.scoring321 / rating.games;
+        });
+
+        // calculate records
+        if (game.leaderboard[game.leaderboard.length - 1].points < this.lowestScore.points) {
             this.lowestScore.points = game.leaderboard[game.leaderboard.length - 1].points;
             this.lowestScore.player = game.leaderboard[game.leaderboard.length - 1].player;
             this.lowestScore.days = moment().diff(moment(game.endTime), 'd');
             this.lowestScore.numplayers = game.settings.players.length;
         }
-        if(game.leaderboard[0].points > this.highestScore.points){
+
+        if (game.leaderboard[0].points > this.highestScore.points) {
             this.highestScore.points = game.leaderboard[0].points;
             this.highestScore.player = game.leaderboard[0].player;
             this.highestScore.days = moment().diff(moment(game.endTime), 'd');
@@ -88,7 +121,9 @@ export class HistoryController {
       // create the charts
       this.loadCharts();
 
-      this.$scope.$apply();
+      this.$timeout(() => {
+        this.$scope.$apply();
+      });
     });
   }
 
@@ -124,4 +159,4 @@ export class HistoryController {
   }
 }
 
-HistoryController.$inject = ['$scope'];
+HistoryController.$inject = ['$scope', '$timeout'];

@@ -126,24 +126,12 @@ export class StorageService {
           return resolve(null);
         }
 
-        var file = new Blob([JSON.stringify(games)], {type: 'json'});
-
-        // create download anchor
-        var a = document.createElement('a');
-        var url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = `oh-hell-all-games-${moment().format('YYYY-MM-DD-HH-mm-ss')}.json`;
-        document.body.appendChild(a);
-
-        // click anchor to download file
-        a.click();
-
-        // delete download anchor
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            resolve();
-        }, 0);
+        this.exportFile(
+          `oh-hell-all-games-${moment().format('YYYY-MM-DD-HH-mm-ss')}.json`,
+          games,
+          resolve,
+          reject
+        );
       }, reject);
     });
   }
@@ -155,26 +143,35 @@ export class StorageService {
           return resolve(null);
         }
 
-        var file = new Blob([JSON.stringify(game)], {type: 'json'});
-
-        // create download anchor
-        var a = document.createElement('a');
-        var url = URL.createObjectURL(file);
-        a.href = url;
-        a.download = `oh-hell-game-${moment(game.startTime).format('YYYY-MM-DD-HH-mm-ss')}.json`;
-        document.body.appendChild(a);
-
-        // click anchor to download file
-        a.click();
-
-        // delete download anchor
-        setTimeout(() => {
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            resolve();
-        }, 0);
+        this.exportFile(
+          `oh-hell-game-${moment(game.startTime).format('YYYY-MM-DD-HH-mm-ss')}.json`,
+          game,
+          resolve,
+          reject
+        );
       }, reject);
     });
+  }
+
+  exportFile(filename, data, resolve, reject) {
+    var file = new Blob([JSON.stringify(data)], {type: 'json'});
+
+    // create download anchor
+    var a = document.createElement('a');
+    var url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+
+    // click anchor to download file
+    a.click();
+
+    // delete download anchor
+    setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        resolve();
+    }, 0);
   }
 
   importFile() {
