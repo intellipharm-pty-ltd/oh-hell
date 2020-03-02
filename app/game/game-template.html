@@ -46,6 +46,22 @@
                                     {{Game.game.rounds[Game.game.currentRound.index].cardCount}}
                                     <suit suit="Game.game.rounds[Game.game.currentRound.index].card.suit"></suit>
                                 </p>
+                                <h3>Highest Cards</h3>
+                                <p class="row" ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit === 'N'">
+                                    <card name="'Joker'" size="tiny"></card>
+                                    <card suit="'H'" name="'A'" size="tiny"></card>
+                                    <card suit="'D'" name="'A'" size="tiny"></card>
+                                    <card suit="'C'" name="'A'" size="tiny"></card>
+                                    <card suit="'S'" name="'A'" size="tiny"></card>
+                                </p>
+                                <p class="row" ng-if="Game.game.rounds[Game.game.currentRound.index].card.suit !== 'N'">
+                                    <card name="'Joker'" size="tiny"></card>
+                                    <card ng-if="Game.game.settings.allowSuperTrump" suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="Game.game.rounds[Game.game.currentRound.index].card.name" size="tiny"></card>
+                                    <card suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="'J'" size="tiny"></card>
+                                    <card suit="Game.bowerSuit(Game.game.rounds[Game.game.currentRound.index].card.suit)" name="'J'" size="tiny"></card>
+                                    <card suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="'A'" size="tiny"></card>
+                                    <card suit="Game.game.rounds[Game.game.currentRound.index].card.suit" name="'K'" size="tiny"></card>
+                                </p>
                             </div>
                             <div class="col-md d-none d-lg-block">
                                 <h3>Bids</h3>
