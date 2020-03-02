@@ -25,8 +25,8 @@
                         <div class="col-md">{{round.cardCount}}{{round.card.suit}} - {{Game.game.settings.players[round.dealer]}}</div>
                         <div class="col-md score" ng-repeat="(playerIndex, player) in Game.game.settings.players">
                             <input type="checkbox" ng-model="Game.game.rounds[roundIndex].players[playerIndex].blind" ng-show="Game.eligibleForBlindBid(playerIndex, roundIndex)" title="Blind Bid" />
-                            <input type="number" min="0" max="10" class="form-control" title="Bid" placeholder="Bid" ng-model="Game.game.rounds[roundIndex].players[playerIndex].bid" />
-                            <input type="number" min="0" max="10" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="Game.game.rounds[roundIndex].players[playerIndex].tricks" /> {{Game.game.rounds[roundIndex].players[playerIndex].points}}
+                            <input type="number" min="0" max="50" class="form-control" title="Bid" placeholder="Bid" ng-model="Game.game.rounds[roundIndex].players[playerIndex].bid" />
+                            <input type="number" min="0" max="50" class="form-control" title="Tricks Won" placeholder="Tricks Won" ng-model="Game.game.rounds[roundIndex].players[playerIndex].tricks" /> {{Game.game.rounds[roundIndex].players[playerIndex].points}}
                         </div>
                     </div>
                 </div>
