@@ -454,6 +454,15 @@ export class GameController {
 
     return deck;
   }
+  
+  bowerSuit(suit) {
+    switch (suit) {
+      case 'H': return 'D';
+      case 'D': return 'H';
+      case 'S': return 'C';
+      case 'C': return 'S';
+    }
+  }
 }
 
 GameController.$inject = ['$scope', '$timeout', '$route', '$location'];
