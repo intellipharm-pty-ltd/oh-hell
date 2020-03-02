@@ -170,3 +170,8 @@ body.dark .suit-N {
 .st-sort-descent:after {
     content: '\25BC';
 }
+
+/* Forms */
+.ng-invalid {
+    box-shadow: inset 0px 0px 0px 1px #E2253D;
+}
