@@ -141,7 +141,7 @@ export class GameController {
 
     // check to make sure all players have bid
     this.game.rounds[this.game.currentRound.index].players.forEach((player) => {
-      if (player.bid === null) {
+      if (player.bid === null || player.bid === undefined) {
         allPlayersHaveBid = false;
       }
     });
@@ -166,7 +166,7 @@ export class GameController {
 
     // check to make sure all players have scored
     this.game.rounds[this.game.currentRound.index].players.forEach((player) => {
-      if (player.tricks === null) {
+      if (player.tricks === null || player.tricks === undefined) {
         allPlayersHaveScored = false;
       }
     });
@@ -184,7 +184,7 @@ export class GameController {
 
     for (var i = 0; i < round.order.length && i < orderIndex; i++) {
       // if any player before this player hasn't bid yet then disable the bid
-      if (round.players[round.order[i]].bid === null) {
+      if (round.players[round.order[i]].bid === null || round.players[round.order[i]].bid === undefined) {
         return true;
       }
     }
