@@ -76,6 +76,13 @@ img {
     line-height: 70px;
 }
 
+.card.card-size-tiny {
+    height: 70px;
+    width: 52px;
+    font-size: 35px;
+    line-height: 35px;
+}
+
 /* suit */
 
 .suit-S,
